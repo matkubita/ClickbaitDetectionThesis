@@ -1,0 +1,32 @@
+body { 
+    width: 300px;
+    padding: 15px;
+    background-color: #fffbea;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+#checkButton {
+    background-color: #ffdd57;
+    border: none;
+    color: #333;
+    font-weight: bold;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    width: 80%;
+}
+
+#checkButton:hover {
+    background-color: #f1c40f;
+}
+
+#responseContent {
+    padding-top: 15px;
+    color: #333;
+    text-align: center;
+    font-size: 0.95rem;
+}
