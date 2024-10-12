@@ -13,6 +13,8 @@ chrome.storage.local.get([sourceUrl]).then((result) => {
         document.getElementById('responseContent').textContent = "Beware, that's a clickbait!"
     } else if (result[sourceUrl] == 0) {
         document.getElementById('responseContent').textContent = "You are good to go!"
+    } else {
+        document.getElementById('responseContent').textContent = "Find out if the article is a clickbait"
     }
 });
 
