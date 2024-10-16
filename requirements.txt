@@ -3,3 +3,11 @@
 nltk==3.9.1
 numpy==2.1.0
 textstat==0.7.4
+pandas>2
+matplotlib
+seaborn
+scikit-learn
+xgboost
+keras
+tensorflow
+keras_preprocessing
