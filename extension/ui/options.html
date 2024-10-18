@@ -10,11 +10,15 @@
 </head>
   <body>
     <h1>ClickGuard Settings</h1>
-
+    <br>
     <div class="container-sm">
-      
+    <!-- Recognition section -->
+     <div class="row">
+      <div class="col"><h3>Recognition</h3></div>
+     </div>  
+      <!-- manual option -->
       <div class="row">
-        <div class="col-1"></div>
+        
         <div class="col">
           <b>Manual-Only Recognition</b><br>
           To check if an article contains a clickbait title,
@@ -22,51 +26,65 @@
         </div>
         <div class="col-2" style="text-align: right;">
           <label class="switch" style="display: inline-block;">
-            <input type="radio" id="manualRecognition" name="recognition">
+            <input type="radio" id="manualRecognition" name="recognition" value="manual">
             <span class="slider round"></span>
           </label>
         </div>
-        <div class="col-1"></div>
       </div>
-
+    <!-- semiAutomatic option -->
       <div class="row">
-        <div class="col-1"></div>
+        
         <div class="col">
           <b>Semi-Automatic Recognition</b> (recommended)<br>
           Automatically checks for clickbaits on whitelisted URLs and on pages containing relevant meta tags.
         </div>
         <div class="col-2" style="text-align: right;">
           <label class="switch" style="display: inline-block;">
-            <input type="radio" id="semiAutomaticRecognition" name="recognition">
+            <input type="radio" id="semiAutomaticRecognition" name="recognition" value="semiAutomatic">
             <span class="slider round"></span>
           </label>
         </div>
-        <div class="col-1"></div>
       </div>
-
+    <!-- automatic option -->
       <div class="row">
-        <div class="col-1"></div>
+        
         <div class="col">
           <b>Automatic Recognition</b><br>
           Automatically checks for clickbaits on every page. May slow down the browser.
         </div>
         <div class="col-2" style="text-align: right;">
           <label class="switch" style="display: inline-block;">
-            <input type="radio" id="automaticRecognition" name="recognition">
+            <input type="radio" id="automaticRecognition" name="recognition" value="automatic">
             <span class="slider round"></span>
           </label>
         </div>
-        <div class="col-1"></div>
       </div>
-
+      <!-- save button -->
+      <div style="text-align: center;">
+        <button id="saveButton" type="button" class="btn">Save</button>
+        <div id="status"></div>
+      </div>
+      <br>
+      <!-- whitelist section -->
+      <div class="row">
+        <div class="col"><h3>Whitelist</h3></div>
+      </div>
+      
+      <div class="row">
+        <form style="display: flex;">
+          <input id="whitelistInput" type="text" class="form-control" placeholder="www.example.com">
+          <button id="addButton" type="submit" class="btn btn-primary">Add URL</button>
+        </form>
+        <div>
+          <ul id="whitelistList" class="table list">
+            <li class="whiteUrl" >www.example.com</li>
+            <li class="whiteUrl">www.empik.com</li>
+          </ul>
+        </div>
+      </div>
+        
+      
     </div>
-
-    <div style="text-align: center;">
-      <button id="saveButton" type="button" class="btn">Save</button>
-      <div id="status"></div>
-    </div>
-    
-
     <script src="../options.js"></script>
   </body>
 </html>

@@ -5,7 +5,7 @@
     max-width: 768px;
 }
 .container-sm {
-    max-width: 576px;
+    max-width: 460px;
 }
 
 body { 
@@ -19,8 +19,22 @@ h1 {
     text-align: center;
 }
 
+h3 {
+    padding-bottom: 3px;
+    border-bottom: 1px solid #333;
+}
+
 .row {
     padding: 10px;
+}
+
+#whitelistInput {
+    flex: 1; 
+    margin-right: 10px;
+}
+
+.whiteUrl {
+    padding-top: 10px;
 }
 
 #optionsButton {
@@ -28,6 +42,19 @@ h1 {
     top: 5px;
     right: 5px;
     color: #333;
+}
+
+#addButton {
+    background-color: #ffdd57;
+    border: none;
+    color: #333;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#addButton:hover {
+    background-color: #f1c40f;
 }
 
 #saveButton {
@@ -41,7 +68,7 @@ h1 {
     width: 80px;
 }
 
-#checkButton:hover {
+#saveButton:hover {
     background-color: #f1c40f;
 }
 

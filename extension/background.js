@@ -1,6 +1,24 @@
 // for console access
 import { Detector } from "./detector.js";
 
+const DEFAULT_RECOGNITION = "manual";
+
+async function setDefaults() {
+    chrome.storage.sync.get(["recognitionType"]).then((result) => {
+        const recognitionType = result["recognitionType"];
+        if (typeof recognitionType === 'undefined') {
+            console.log("Setting the default for recognition type to", DEFAULT_RECOGNITION);
+            chrome.storage.sync.set({["recognitionType"]: DEFAULT_RECOGNITION});
+        } else {
+            console.log("Recognition type setting already set to", recognitionType);
+        }
+    }).catch((error) => {
+        console.error("Error during setting default recognitionType:", error);
+    });
+}
+
+setDefaults();
+
 const MINIMAL_TIME = 2;
 let lastTime = new Date();  // last time badge was updated
 let lastTabId = "";  // last tab id for which badge was updated
@@ -46,3 +64,4 @@ async function handleBackground() {
 }
 
 handleBackground();
+
