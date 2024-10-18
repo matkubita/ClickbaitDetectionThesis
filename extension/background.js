@@ -15,6 +15,7 @@ async function setDefaults() {
     }).catch((error) => {
         console.error("Error during setting default recognitionType:", error);
     });
+    chrome.storage.sync.set({"whitelist": ["example.com"]})
 }
 
 setDefaults();
