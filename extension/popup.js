@@ -1,5 +1,5 @@
 // code for interacting with popup
-
+import { Detector } from "./detector.js";
 import { getCurrentTab } from "./utils.js";
 
 const activeTab = await getCurrentTab();
@@ -16,6 +16,7 @@ chrome.storage.local.get([sourceUrl]).then((result) => {
     } else {
         document.getElementById('responseContent').textContent = "Find out if the article is a clickbait"
     }
+    new Detector().setBadge(result[sourceUrl], activeTab.id);
 });
 
 // button action
@@ -37,6 +38,6 @@ document.getElementById('checkButton').addEventListener('click', async () => {
     // execute script in active tab
     chrome.scripting.executeScript({
         target: {tabId: tabId},
-        files: ['content.js']
+        files: ['prediction.js']
     });
 });
