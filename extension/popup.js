@@ -38,3 +38,12 @@ document.getElementById('checkButton').addEventListener('click', async () => {
         files: ['prediction.js']
     });
 });
+
+// options button
+document.getElementById('optionsButton').addEventListener('click', function() {
+    if (chrome.runtime.openOptionsPage) {
+      chrome.runtime.openOptionsPage();
+    } else {
+      window.open(chrome.runtime.getURL('templates/options.html'));
+    }
+  });

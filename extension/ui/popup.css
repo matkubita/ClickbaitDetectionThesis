@@ -1,11 +1,21 @@
 body { 
+    position: relative;
     width: 300px;
     padding: 15px;
-    background-color: #fffbea;
+    background-color: #f8f4e0;
+    border: 1px solid black;
+    text-align: center;
 }
 
 h2 {
     text-align: center;
+    color: #333;
+}
+
+#optionsButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
     color: #333;
 }
 

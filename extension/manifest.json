@@ -14,7 +14,7 @@
         "background"
     ],
     "action": {
-        "default_popup": "popup.html",
+        "default_popup": "templates/popup.html",
         "default_icon": "icons/icon16.png"
       },
     "content_scripts": [
@@ -32,5 +32,6 @@
         "32": "icons/icon32.png",
         "48": "icons/icon48.png",
         "128": "icons/icon128.png"
-      }
+      },
+    "options_page": "templates/options.html"
   }
