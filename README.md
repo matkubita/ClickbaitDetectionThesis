@@ -9,17 +9,17 @@ Repository with methods for clickbait detection, spoiling and analysis.
 ## How to Set Up the Environment with Conda:
 1. Clone or navigate to the project directory:
     ```bash
-    cd ClickbaitDetectionThesis
+    cd ClickbaitDetectionThesis/environments
     ```
 
-2. Create the Conda environment using the `environment.yaml` file:
+2. Create the Conda environment using the `main_env.yaml` file (respectively for eda_env):
     ```bash
-    conda env create -f environment.yaml
+    conda env create -f main_env.yaml
     ```
 
 3. Activate the environment:
     ```bash
-    conda activate clickbait-detection
+    conda activate main_env
     ```
 
 4. Once the environment is activated, you can start working with the project.
