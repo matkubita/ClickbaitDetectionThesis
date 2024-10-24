@@ -12,51 +12,85 @@
     <h1>ClickGuard Settings</h1>
     <br>
     <div class="container-sm">
+    <!-- search engines section -->
+    <div class="row">
+      <div class="col"><h3>Pre-click detection</h3></div>
+    </div>
+    <div class="row">
+        
+      <div class="col">
+        <b>Search engine detection</b><br>
+        Automatically checks for clickbaits on search engines result pages. 
+        Currently only <i>Google</i> is supported.
+      </div>
+      <div class="col-2" style="text-align: right;">
+        <label class="switch" style="display: inline-block;">
+          <input type="checkbox" id="searchEngineDetection" name="searchEngineDetection">
+          <span class="slider round"></span>
+        </label>
+      </div>
+    </div>
     <!-- Recognition section -->
      <div class="row">
-      <div class="col"><h3>Recognition</h3></div>
+      <div class="col"><h3>Post-click detection</h3></div>
      </div>  
       <!-- manual option -->
       <div class="row">
         
         <div class="col">
-          <b>Manual-Only Recognition</b><br>
+          <b>Manual-Only Detection</b><br>
           To check if an article contains a clickbait title,
           click on the extension icon and then "Check" button in the popup.
         </div>
-        <div class="col-2" style="text-align: right;">
+        <!-- <div class="col-2" style="text-align: right;">
           <label class="switch" style="display: inline-block;">
             <input type="radio" id="manualRecognition" name="recognition" value="manual">
             <span class="slider round"></span>
           </label>
+        </div> -->
+        <div class="col-2" style="text-align: right;">
+          <div class="form-check" style="display: inline-block;">
+            <input style="width: 30px; height: 30px;" class="form-check-input" type="radio" name="recognition" id="manualRecognition" value="manual">
+          </div>
         </div>
+        
       </div>
     <!-- semiAutomatic option -->
       <div class="row">
         
         <div class="col">
-          <b>Semi-Automatic Recognition</b> (recommended)<br>
+          <b>Semi-Automatic Detection</b> (recommended)<br>
           Automatically checks for clickbaits on whitelisted URLs and on pages containing relevant meta tags.
         </div>
-        <div class="col-2" style="text-align: right;">
+        <!-- <div class="col-2" style="text-align: right;">
           <label class="switch" style="display: inline-block;">
             <input type="radio" id="semiAutomaticRecognition" name="recognition" value="semiAutomatic">
             <span class="slider round"></span>
           </label>
+        </div> -->
+        <div class="col-2" style="text-align: right;">
+          <div class="form-check" style="display: inline-block;">
+            <input style="width: 30px; height: 30px;" class="form-check-input" type="radio" id="semiAutomaticRecognition" name="recognition" value="semiAutomatic">
+          </div>
         </div>
       </div>
     <!-- automatic option -->
       <div class="row">
         
         <div class="col">
-          <b>Automatic Recognition</b><br>
+          <b>Automatic Detection</b><br>
           Automatically checks for clickbaits on every page. May slow down the browser.
         </div>
-        <div class="col-2" style="text-align: right;">
+        <!-- <div class="col-2" style="text-align: right;">
           <label class="switch" style="display: inline-block;">
             <input type="radio" id="automaticRecognition" name="recognition" value="automatic">
             <span class="slider round"></span>
           </label>
+        </div> -->
+        <div class="col-2" style="text-align: right;">
+          <div class="form-check" style="display: inline-block;">
+            <input style="width: 30px; height: 30px;" class="form-check-input" type="radio" id="automaticRecognition" name="recognition" value="automatic">
+          </div>
         </div>
       </div>
       <!-- save button -->
@@ -82,6 +116,8 @@
           </ul>
         </div>
       </div>
+
+
         
       
     </div>

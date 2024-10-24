@@ -14,6 +14,8 @@ document.getElementById('saveButton').addEventListener('click', () => {
       }
     );
   });
+// TODO  - add search engine detection option
+
 
 async function setWhitelist() {
   chrome.storage.sync.get(["whitelist"]).then((result) => {
