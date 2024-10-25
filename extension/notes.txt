@@ -1,0 +1,4 @@
+Settings values:
+
+preDetection -> search engine detection
+recognitionType -> type of post click detection
