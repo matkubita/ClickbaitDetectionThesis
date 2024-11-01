@@ -1,4 +1,5 @@
 .ipynb_checkpoints/
 .env
+.idea
 *.Identifier
 data/cc_dataset.csv
