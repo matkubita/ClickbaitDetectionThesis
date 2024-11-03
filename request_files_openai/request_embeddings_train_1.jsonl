@@ -1,0 +1,40 @@
+{"custom_id": "request0", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "The Lumineers' 'Cleopatra' Climbs to No. 1 on Alternative Songs Chart"}}
+{"custom_id": "request1", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Aaron Hernandez leaves us with one final 'Why?'"}}
+{"custom_id": "request2", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "These Baby Meerkats Are Too Precious For This World"}}
+{"custom_id": "request3", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Which Celeb *Actually* Won Halloween 2015"}}
+{"custom_id": "request4", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Colton Haynes Just Out-Halloweened Himself By Dressing Up As Ursula"}}
+{"custom_id": "request5", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "14 of the best photos of US military life during 2016"}}
+{"custom_id": "request6", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Heems and Awkwafina Have a Totally Uncensored Conversation on TAWK"}}
+{"custom_id": "request7", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Dr. Sebastian Gorka to Astroturf Protesters: You Are \u2018Victims of Fake News\u2019"}}
+{"custom_id": "request8", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Rat Boy responds to Kendrick Lamar sampling him on 'LUST'"}}
+{"custom_id": "request9", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Lou Gehrig\u2019s Fixer-Upper Awaits a Buyer for the Long Run "}}
+{"custom_id": "request10", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Spam mailer gets 9 year jail sentence"}}
+{"custom_id": "request11", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "'Message in a bottle' found 9,000 miles away with a tech twist"}}
+{"custom_id": "request12", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Amazing timelapse captures Christmas supermoon over London skyline"}}
+{"custom_id": "request13", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Kendrick Lamar's 'DAMN.' Cover Art Inspires Conspiracy Theories, Fire Memes"}}
+{"custom_id": "request14", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "With 3,500 Layoffs, Corning Is Latest to Cut Jobs"}}
+{"custom_id": "request15", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "For Anyone Who Thinks Drunk Food Is The Best Part Of Going Out"}}
+{"custom_id": "request16", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Daily Mail: Scotland Yard offered Menezes family US$1m"}}
+{"custom_id": "request17", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Vladimir Putin\u2019s popularity is soaring among Republicans"}}
+{"custom_id": "request18", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Mike Pompeo Sworn In as CIA Director After Senate Confirmation"}}
+{"custom_id": "request19", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Murder charge dropped against US Marine who admitted killing Iraqi detainee"}}
+{"custom_id": "request20", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "19 Actually Stylish Men To Follow On Instagram"}}
+{"custom_id": "request21", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "This One Trick Let's You Add Live Photos to Instagram"}}
+{"custom_id": "request22", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Jessica Williams And Phoebe Robinson Are Asking Hollywood To Shift Its Default"}}
+{"custom_id": "request23", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Inside the logo: Wolves' new look represents franchise ready to win"}}
+{"custom_id": "request24", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Carrie Fisher: A Look at Her Life Beyond \u2018Star Wars\u2019 "}}
+{"custom_id": "request25", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "18 Perfect Responses For When Someone Texts You \"K\""}}
+{"custom_id": "request26", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "19 Pictures That Are Way Too Real After A Night Out"}}
+{"custom_id": "request27", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "How Cathay's Stock Returns Went From Bad to Worse Over Three CEOs"}}
+{"custom_id": "request28", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Le Mans 24 Hours 2015: Porsche prove unbeatable in qualifying"}}
+{"custom_id": "request29", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Netscape Navigator support ceases today"}}
+{"custom_id": "request30", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Police who shot dead father of two on M62 found gun in his car"}}
+{"custom_id": "request31", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Trump aide Anthony Scaramucci: Scientific community gets 'a lot of things wrong'"}}
+{"custom_id": "request32", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "17 Photos That Won't Make Any Sense To Men"}}
+{"custom_id": "request33", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Nurseries not harmful to children, says new UK study"}}
+{"custom_id": "request34", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Syrian Refugees on the War, Their Camp, and Your Questions "}}
+{"custom_id": "request35", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "12 Secrets Plus-Size Models Want You To Know"}}
+{"custom_id": "request36", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "US government shutdown averted in last-minute deal"}}
+{"custom_id": "request37", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Lady Gaga's New Disco Cover Will Make Your Weekend"}}
+{"custom_id": "request38", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Twitter Goes Volcanic On Jeff Sessions After His Hawaii Dig"}}
+{"custom_id": "request39", "method": "POST", "url": "/v1/embeddings", "body": {"model": "text-embedding-3-large", "input": "Wind Farm Off Cape Cod Clears Hurdle"}}
