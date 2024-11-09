@@ -5,3 +5,4 @@
 *.Identifier
 data/cc_dataset.csv
 pretrained_models
+file_path.txt
