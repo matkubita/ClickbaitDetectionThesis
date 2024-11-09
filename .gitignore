@@ -1,5 +1,7 @@
 .ipynb_checkpoints/
 .env
 .idea
+.vscode
 *.Identifier
 data/cc_dataset.csv
+pretrained_models
