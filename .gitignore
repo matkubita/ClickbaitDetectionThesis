@@ -1,4 +1,5 @@
 .ipynb_checkpoints/
+request_files_openai/
 .env
 .idea
 *.Identifier
