@@ -2,6 +2,8 @@
 request_files_openai/
 .env
 .idea
+.vscode
 *.Identifier
 data/cc_dataset.csv
+pretrained_models
 file_path.txt
