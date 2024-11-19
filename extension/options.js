@@ -1,10 +1,10 @@
-// saves options to chrome sync storage
+// saves post click detection options to chrome sync storage
 document.getElementById('saveButton').addEventListener('click', () => {
     
-    const recognitionType = document.querySelector('input[name="recognition"]:checked').value;
+    const postDetectionType = document.querySelector('input[name="postDetection"]:checked').value;
   
     chrome.storage.sync.set(
-      { recognitionType:  recognitionType},
+      { postDetectionType:  postDetectionType},
       () => {
         const status = document.getElementById('status');
         status.textContent = 'Options saved.';
@@ -15,32 +15,31 @@ document.getElementById('saveButton').addEventListener('click', () => {
     );
   });
 
-// saves search engine options to sync storage
+// saves pre click detection options to sync storage
 document.getElementById("searchEngineDetection").addEventListener('change', (event) => {
-  const preDetection = event.target.checked;
-  if (preDetection) {
+  const searchEngineDetection = event.target.checked;
+  if (searchEngineDetection) {
     console.log("Checkbox is checked..");
   } else {
     console.log("Checkbox is not checked..");
   }
 
   chrome.storage.sync.set(
-    { preDetection: preDetection},
+    { searchEngineDetection: searchEngineDetection},
     () => {console.log("Pre-click detection options saved");}
   );
 });
 
-
-
-async function setWhitelist() {
-  chrome.storage.sync.get(["whitelist"]).then((result) => {
-    const whitelist = result['whitelist'];
-    const htmlList = document.getElementById("whitelistList");
+// sets monitored sites from storage
+async function setMonitoredSites() {
+  chrome.storage.sync.get(["monitoredSites"]).then((result) => {
+    const monitoredSites = result['monitoredSites'];
+    const htmlList = document.getElementById("monitoredSitesList");
     
-    for (let i = 0; i < whitelist.length; i++) {
+    for (let i = 0; i < monitoredSites.length; i++) {
       const urlItem = document.createElement('li');
-      urlItem.setAttribute('class', 'whiteUrl');
-      let webUrl = whitelist[i];
+      urlItem.setAttribute('class', 'monitoredUrl');
+      let webUrl = monitoredSites[i];
       if (webUrl.startsWith("https://")) {
         webUrl = webUrl.substring(8);
       } else if (webUrl.startsWith("http://")) {
@@ -48,46 +47,51 @@ async function setWhitelist() {
       }
       urlItem.textContent = webUrl;
       htmlList.appendChild(urlItem);
-  }
-  // TODO function which sets whitelisted websites from sync storage
+    }
   });
 }
 
+// add monitored site to storage
 document.getElementById('addButton').addEventListener('click', () => {
-  let newWebsite = document.getElementById("whitelistInput").value;
-  // TODO set to sync storage, append to array
+  let newWebsite = document.getElementById("monitoredSitesInput").value;
 
   if (!newWebsite.startsWith("http")) {
     newWebsite = "https://".concat(newWebsite);
   }
 
-  chrome.storage.sync.get(["whitelist"]).then((result) => {
-    const whitelist = result['whitelist'];
-    whitelist.push(newWebsite);
-    chrome.storage.sync.set({"whitelist": whitelist});
+  chrome.storage.sync.get(["monitoredSites"]).then((result) => {
+    const monitoredSites = result['monitoredSites'];
+    monitoredSites.push(newWebsite);
+    chrome.storage.sync.set({"monitoredSites": monitoredSites});
   });
 
-  // setWhitelist();
+  // TODO append to array ?
+  // setmonitoredSites(); - reloads automatically?
 });
 
-// Restores select box and checkbox state using the preferences
-// stored in chrome.storage.
+// Restores select box and checkbox state using the preferences stored in chrome.storage.
 document.addEventListener('DOMContentLoaded', () => {
-  chrome.storage.sync.get(["recognitionType"]).then((result) => {
-    const recognitionType = result["recognitionType"];
-    document.getElementById(recognitionType.concat("Recognition")).checked = "checked"
+  
+  // set post detection radio button
+  chrome.storage.sync.get(["postDetectionType"]).then((result) => {
+    const postDetectionType = result["postDetectionType"];
+    document.getElementById(postDetectionType.concat("Detection")).checked = "checked"
   });
-  chrome.storage.sync.get(["preDetection"]).then((result) => {
-    const preDetection = result["preDetection"];
-    console.log("preDetection", preDetection);
-    if (preDetection) {
+
+  // set pre click detection toggle
+  chrome.storage.sync.get(["searchEngineDetection"]).then((result) => {
+    const searchEngineDetection = result["searchEngineDetection"];
+    console.log("searchEngineDetection", searchEngineDetection);
+    if (searchEngineDetection) {
       document.getElementById("searchEngineDetection").checked = true;
     } else {
       document.getElementById("searchEngineDetection").checked = false;
     }
-    
   });
-  setWhitelist();
+
+  // set monitored sites list
+  setMonitoredSites();
+
 });
   
   

@@ -1,126 +1,102 @@
 <!DOCTYPE html>
 <html lang="en"></html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Clickguard options</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="options.css" rel="stylesheet">
 </head>
-  <body>
+<body>
     <h1>ClickGuard Settings</h1>
     <br>
     <div class="container-sm">
-    <!-- search engines section -->
-    <div class="row">
-      <div class="col"><h3>Pre-click detection</h3></div>
-    </div>
-    <div class="row">
-        
-      <div class="col">
-        <b>Search engine detection</b><br>
-        Automatically checks for clickbaits on search engines result pages. 
-        Currently only <i>Google</i> is supported.
-      </div>
-      <div class="col-2" style="text-align: right;">
-        <label class="switch" style="display: inline-block;">
-          <input type="checkbox" id="searchEngineDetection" name="preDetection">
-          <span class="slider round"></span>
-        </label>
-      </div>
-    </div>
-    <!-- Recognition section -->
-     <div class="row">
-      <div class="col"><h3>Post-click detection</h3></div>
-     </div>  
-      <!-- manual option -->
-      <div class="row">
-        
-        <div class="col">
-          <b>Manual-Only Detection</b><br>
-          To check if an article contains a clickbait title,
-          click on the extension icon and then "Check" button in the popup.
+        <!-- PRE CLICK DETECTION -->
+        <div class="row">
+            <div class="col"><h3>Pre-click detection</h3></div>
         </div>
-        <!-- <div class="col-2" style="text-align: right;">
-          <label class="switch" style="display: inline-block;">
-            <input type="radio" id="manualRecognition" name="recognition" value="manual">
-            <span class="slider round"></span>
-          </label>
-        </div> -->
-        <div class="col-2" style="text-align: right;">
-          <div class="form-check" style="display: inline-block;">
-            <input style="width: 30px; height: 30px;" class="form-check-input" type="radio" name="recognition" id="manualRecognition" value="manual">
-          </div>
+        <!-- search engines section -->
+        <div class="row">
+            <div class="col">
+                <b>Search engine detection</b><br>
+                Automatically checks for clickbaits on search engines result pages.
+                Currently only <i>Google</i> is supported.
+            </div>
+            <div class="col-2" style="text-align: right;">
+                <label class="switch" style="display: inline-block;">
+                    <input type="checkbox" id="searchEngineDetection" name="preDetection">
+                    <span class="slider round"></span>
+                </label>
+            </div>
         </div>
-        
-      </div>
-    <!-- semiAutomatic option -->
-      <div class="row">
-        
-        <div class="col">
-          <b>Semi-Automatic Detection</b> (recommended)<br>
-          Automatically checks for clickbaits on whitelisted URLs and on pages containing relevant meta tags.
+        <!-- POST CLICK DETECTION -->
+        <div class="row">
+            <div class="col"><h3>Post-click detection</h3></div>
         </div>
-        <!-- <div class="col-2" style="text-align: right;">
-          <label class="switch" style="display: inline-block;">
-            <input type="radio" id="semiAutomaticRecognition" name="recognition" value="semiAutomatic">
-            <span class="slider round"></span>
-          </label>
-        </div> -->
-        <div class="col-2" style="text-align: right;">
-          <div class="form-check" style="display: inline-block;">
-            <input style="width: 30px; height: 30px;" class="form-check-input" type="radio" id="semiAutomaticRecognition" name="recognition" value="semiAutomatic">
-          </div>
+        <!-- manual option -->
+        <div class="row">
+            <div class="col">
+                <b>Manual-Only Detection</b><br>
+                To check if an article contains a clickbait title,
+                click on the extension icon and then "Check" button in the popup.
+            </div>
+            <div class="col-2" style="text-align: right;">
+                <label style="display: inline-block;">
+                    <input style="width: 30px; height: 30px;" type="radio" name="postDetection"
+                        id="manualDetection" value="manual">
+                </label>
+            </div>
         </div>
-      </div>
-    <!-- automatic option -->
-      <div class="row">
-        
-        <div class="col">
-          <b>Automatic Detection</b><br>
-          Automatically checks for clickbaits on every page. May slow down the browser.
+        <!-- semiAutomatic option -->
+        <div class="row">
+            <div class="col">
+                <b>Semi-Automatic Detection</b> (recommended)<br>
+                Automatically checks for clickbaits on monitored URLs and on pages containing relevant meta tags.
+            </div>
+            <div class="col-2" style="text-align: right;">
+                <label style="display: inline-block;">
+                    <input style="width: 30px; height: 30px;" type="radio" name="postDetection"
+                    id="semiAutomaticDetection" value="semiAutomatic">
+                </label>
+            </div>
         </div>
-        <!-- <div class="col-2" style="text-align: right;">
-          <label class="switch" style="display: inline-block;">
-            <input type="radio" id="automaticRecognition" name="recognition" value="automatic">
-            <span class="slider round"></span>
-          </label>
-        </div> -->
-        <div class="col-2" style="text-align: right;">
-          <div class="form-check" style="display: inline-block;">
-            <input style="width: 30px; height: 30px;" class="form-check-input" type="radio" id="automaticRecognition" name="recognition" value="automatic">
-          </div>
+        <!-- automatic option -->
+        <div class="row">
+            <div class="col">
+                <b>Automatic Detection</b><br>
+                Automatically checks for clickbaits on every page. May slow down the browser.
+            </div>
+            <div class="col-2" style="text-align: right;">
+                <label style="display: inline-block;">
+                    <input style="width: 30px; height: 30px;" type="radio" name="postDetection"
+                    id="automaticDetection" value="automatic">
+                </label>
+            </div>
         </div>
-      </div>
-      <!-- save button -->
-      <div style="text-align: center;">
-        <button id="saveButton" type="button" class="btn">Save</button>
-        <div id="status"></div>
-      </div>
-      <br>
-      <!-- whitelist section -->
-      <div class="row">
-        <div class="col"><h3>Whitelist</h3></div>
-      </div>
-      
-      <div class="row">
-        <form style="display: flex;">
-          <input id="whitelistInput" type="text" class="form-control" placeholder="www.example.com">
-          <button id="addButton" type="submit" class="btn btn-primary">Add URL</button>
-        </form>
-        <div>
-          <ul id="whitelistList" class="table list">
-            <li class="whiteUrl" >www.sth.com</li>
-            <li class="whiteUrl">www.else.com</li>
-          </ul>
+        <!-- save button -->
+        <div style="text-align: center;">
+            <button id="saveButton" type="button" class="btn">Save</button>
+            <div id="status"></div>
         </div>
-      </div>
-
-
-        
-      
+        <br>
+        <!-- monitored sites section -->
+        <div class="row">
+            <div class="col"><h3>Monitored sites</h3></div>
+        </div>
+        <div class="row">
+            <form style="display: flex;">
+                <input id="monitoredSitesInput" type="text" class="form-control" placeholder="www.example.com">
+                <button id="addButton" type="submit" class="btn btn-primary">Add URL</button>
+            </form>
+            <div>
+                <ul id="monitoredSitesList" class="table list">
+                    <li class="monitoredUrl">sportowefakty.wp.pl/pilka-nozna/</li>
+                </ul>
+            </div>
+        </div>
     </div>
     <script src="../options.js"></script>
-  </body>
+</body>
 </html>

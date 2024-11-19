@@ -1,4 +1,4 @@
-// code for interacting with popup
+// code for interacting with the popup
 import { Detector } from "./detector.js";
 import { getCurrentTab } from "./utils.js";
 
@@ -32,7 +32,7 @@ document.getElementById('checkButton').addEventListener('click', async () => {
             new Detector().setBadge(message.content, activeTab.id);
         }
     });
-    // execute script in active tab
+    // execute script in the active tab
     chrome.scripting.executeScript({
         target: {tabId: activeTab.id},
         files: ['prediction.js']
