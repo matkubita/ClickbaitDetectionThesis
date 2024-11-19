@@ -113,3 +113,71 @@ function addIconsGoogle(predictionMap) {
 
 runPreDetection();
 
+function semiAutoPostDetection() {
+
+    console.log("running semi auto post click detection")
+    const currentUrl = window.location.href;
+
+    chrome.storage.sync.get(["postDetectionType"]).then((result) => {
+        const postDetectionType = result['postDetectionType'];
+        console.log(`currect post click detection type: ${postDetectionType}`)
+        if (postDetectionType == "semiAutomatic") {
+
+            chrome.storage.sync.get(["monitoredSites"]).then((result) => {
+                const monitoredSitesList = result["monitoredSites"];
+                
+                for (let i = 0; i < monitoredSitesList.length; i++) {
+                    let webUrl = monitoredSitesList[i];
+                    console.log("checked", webUrl);
+                    if (currentUrl.includes(webUrl)) {
+                        // what about https and no https
+                        console.log(`matched url: ${webUrl}`)
+                        sendPredictionRequest();
+                        // set badge
+                    }
+                }
+            }).catch((error) => {
+                console.error("Error during getting monitored sites list:", error);
+            });
+        } else if (postDetectionType == "automatic") {
+            sendPredictionRequest();
+            // set badge
+        }
+    }).catch((error) => {
+        console.error("Error during getting default post detection type:", error);
+    })
+}
+
+// backend functionality - calling api for predictions
+
+function sendPredictionRequest() {
+    const sourceUrl = window.location.href;  // needed as a key for storing predictions
+    const htmlContent = document.documentElement.outerHTML;
+
+    const endpointUrl = 'https://clickguard.eu.pythonanywhere.com/extract_and_predict'; 
+    // const endpointUrl = 'http://127.0.0.1:5000/extract_and_predict'; 
+
+    fetch(endpointUrl, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            url: sourceUrl,
+            html: htmlContent
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // send prediction data to popup
+        chrome.runtime.sendMessage({action: 'sendContent', content: data.prediction});
+        // save prediction in storage
+        chrome.storage.local.set({[sourceUrl]: data.prediction});
+        console.log(`Value ${data.prediction} is set for ${sourceUrl}`);
+    })
+    .catch((error) => {
+        chrome.runtime.sendMessage({action: 'SendContent', content: `an error occured during fetching prediction: ${error}`})
+    });
+}
+
+semiAutoPostDetection();
