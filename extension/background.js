@@ -31,7 +31,7 @@ async function setDefaults() {
         console.error("Error during setting default searchEngineDetection type:", error);
     });
     // monitored sites list
-    chrome.storage.sync.set({"monitoredSites": ["https://www.thesun.co.uk/health/"]})
+    chrome.storage.sync.set({"monitoredSites": ["https://www.thesun.co.uk/health/", "sportowefakty.wp.pl/pilka-nozna/"]})
 }
 
 setDefaults();
