@@ -1,5 +1,6 @@
 // for console access
 import { Detector } from "./detector.js";
+import { getCurrentTab } from "./utils.js";
 
 const DEFAULT_POST_DETECTION = "manual";
 const DEFAULT_PRE_DETECTION = false;
@@ -36,6 +37,8 @@ async function setDefaults() {
 
 setDefaults();
 
+let currentTabId = getCurrentTab();
+
 const MINIMAL_TIME = 2;
 let lastTime = new Date();  // last time badge was updated
 let lastTabId = "";  // last tab id for which badge was updated
@@ -48,6 +51,7 @@ async function handleBackground() {
 
     chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         console.log("Tab changed to tab", tabId, "status:", changeInfo.status);
+        currentTabId = tabId;
 
         if (tab.url) {
             
@@ -84,3 +88,9 @@ async function handleBackground() {
 
 handleBackground();
 
+// set up listener so content script can send message to set badge for current tab id
+chrome.runtime.onMessage.addListener(function(message) {
+    if (message.action === 'setBadge') {
+        new Detector().setBadge(message.content, currentTabId);
+    }
+});

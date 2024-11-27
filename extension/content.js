@@ -1,13 +1,8 @@
-// for automatic actions
-// const ifArticle = document.head.querySelector("[property~='og:type']").content == 'article'
-// console.log("Checling if this page is an article:", ifArticle)
-// console.log("INFO is this triggered for every page???")
-
 const PREPARED_WEBSITES_URLS = new Map(); // for easy if-else clauses writing
 PREPARED_WEBSITES_URLS.set("https://www.google.com/search", 'google');
 
 // runs pre detection pipeline
-function runPreDetection() {
+async function runPreDetection() {
 
     const currentUrl = window.location.href;
 
@@ -113,44 +108,53 @@ function addIconsGoogle(predictionMap) {
 
 runPreDetection();
 
-function semiAutoPostDetection() {
+async function runPostDetection() {
 
-    console.log("running semi auto post click detection")
+    console.log("[CLICKGUARD] Running semiAutomatic post-click detection")
     const currentUrl = window.location.href;
 
     chrome.storage.sync.get(["postDetectionType"]).then((result) => {
         const postDetectionType = result['postDetectionType'];
-        console.log(`currect post click detection type: ${postDetectionType}`)
+        console.log(`[CLICKGUARD] Current post-click detection type: ${postDetectionType}`)
         if (postDetectionType == "semiAutomatic") {
 
-            chrome.storage.sync.get(["monitoredSites"]).then((result) => {
-                const monitoredSitesList = result["monitoredSites"];
-                
-                for (let i = 0; i < monitoredSitesList.length; i++) {
-                    let webUrl = monitoredSitesList[i];
-                    console.log("checked", webUrl);
-                    if (currentUrl.includes(webUrl)) {
-                        // what about https and no https
-                        console.log(`matched url: ${webUrl}`)
-                        sendPredictionRequest();
-                        // set badge
+            // meta property
+            const ifArticle = document.head.querySelector("[property~='og:type']").content == 'article'
+            if (ifArticle) {
+                console.log(`[CLICKGUARD] Article detected by meta property`)
+                sendPredictionRequest();
+            } else {
+                // monitored sites
+                chrome.storage.sync.get(["monitoredSites"]).then((result) => {
+                    const monitoredSitesList = result["monitoredSites"];
+                    
+                    for (let i = 0; i < monitoredSitesList.length; i++) {
+                        let webUrl = monitoredSitesList[i];
+                        // console.log("checked", webUrl);
+                        if (currentUrl.includes(webUrl)) {
+                            // what about https and no https
+                            console.log(`[CLICKGUARD] Matched url: ${webUrl}`)
+                            sendPredictionRequest();
+                            break;
+                        }
                     }
-                }
-            }).catch((error) => {
-                console.error("Error during getting monitored sites list:", error);
-            });
+                }).catch((error) => {
+                    console.error("[CLICKGUARD] Error during getting monitored sites list:", error);
+                });
+            }
+
         } else if (postDetectionType == "automatic") {
             sendPredictionRequest();
-            // set badge
         }
     }).catch((error) => {
-        console.error("Error during getting default post detection type:", error);
+        console.error("[CLICKGUARD] Error during getting default post detection type:", error);
     })
 }
 
 // backend functionality - calling api for predictions
 
 function sendPredictionRequest() {
+
     const sourceUrl = window.location.href;  // needed as a key for storing predictions
     const htmlContent = document.documentElement.outerHTML;
 
@@ -171,13 +175,15 @@ function sendPredictionRequest() {
     .then(data => {
         // send prediction data to popup
         chrome.runtime.sendMessage({action: 'sendContent', content: data.prediction});
+        // send message to background script
+        chrome.runtime.sendMessage({action: 'setBadge', content: data.prediction});
         // save prediction in storage
         chrome.storage.local.set({[sourceUrl]: data.prediction});
-        console.log(`Value ${data.prediction} is set for ${sourceUrl}`);
+        console.log(`[CLICKGUARD] Value ${data.prediction} is set for ${sourceUrl}`);
     })
     .catch((error) => {
         chrome.runtime.sendMessage({action: 'SendContent', content: `an error occured during fetching prediction: ${error}`})
     });
 }
 
-semiAutoPostDetection();
+runPostDetection();
