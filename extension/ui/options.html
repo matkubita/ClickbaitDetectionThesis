@@ -49,6 +49,19 @@
                 </label>
             </div>
         </div>
+        <!-- monitored option -->
+        <div class="row">
+            <div class="col">
+                <b>Monitored Detection</b><br>
+                Automatically checks for clickbaits on monitored URLs.
+            </div>
+            <div class="col-2" style="text-align: right;">
+                <label style="display: inline-block;">
+                    <input style="width: 30px; height: 30px;" type="radio" name="postDetection"
+                    id="monitoredDetection" value="monitored">
+                </label>
+            </div>
+        </div>
         <!-- semiAutomatic option -->
         <div class="row">
             <div class="col">
@@ -82,8 +95,11 @@
         </div>
         <br>
         <!-- monitored sites section -->
-        <div class="row">
+        <div class="row" style="padding-bottom: 0px;">
             <div class="col"><h3>Monitored sites</h3></div>
+        </div>
+        <div class="row" style="padding-top: 0px;">
+            <div class="col">List with monitored sites for post-click detection</div>
         </div>
         <div class="row">
             <form style="display: flex;">

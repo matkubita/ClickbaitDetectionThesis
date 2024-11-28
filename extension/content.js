@@ -46,24 +46,26 @@ function sendPreDetectionRequest(foundName) {
     .then(response => response.json())
     .then(data => {
         const predictionMap = new Map(Object.entries(data.predictions));
-        console.log(`Received predictions for ${foundName} search`);
+        console.log(`[CLICKGUARD] Received predictions for ${foundName} search`);
         if (foundName == 'google') {
             addIconsGoogle(predictionMap);
         }
         // implement adding icons for different search engines / websites, it has to be set up in python API first
     })
     .catch((error) => {
-        console.log(`an error occured during fetching prediction: ${error}`)
+        console.log(`[CLICKGUARD] An error occured during fetching prediction: ${error}`)
     });
 }
 
 // adds icons next to the headlines in google search
 function addIconsGoogle(predictionMap) {
     // select all divs with the class 'MjjYud'
+    console.log('[CLICKGUARD] Adding icons')
     const divs = document.querySelectorAll('div.MjjYud');
 
     divs.forEach(div => {
         // find all anchor elements inside the div, probably its enough to select only first anchor
+        
         const anchors = div.querySelectorAll('a');
 
         anchors.forEach(anchor => {
@@ -110,40 +112,32 @@ runPreDetection();
 
 async function runPostDetection() {
 
-    console.log("[CLICKGUARD] Running semiAutomatic post-click detection")
+    console.log("[CLICKGUARD] Checking post-click detection type");
     const currentUrl = window.location.href;
 
     chrome.storage.sync.get(["postDetectionType"]).then((result) => {
         const postDetectionType = result['postDetectionType'];
-        console.log(`[CLICKGUARD] Current post-click detection type: ${postDetectionType}`)
-        if (postDetectionType == "semiAutomatic") {
+        console.log(`[CLICKGUARD] Current post-click detection type: ${postDetectionType}`);
 
-            // meta property
-            const ifArticle = document.head.querySelector("[property~='og:type']").content == 'article'
-            if (ifArticle) {
-                console.log(`[CLICKGUARD] Article detected by meta property`)
+        // monitored
+        if (postDetectionType == 'monitored') {
+            console.log("[CLICKGUARD] Running monitored post-click detection");
+            checkMonitoredSites(currentUrl);
+        // semi automatic
+        } else if (postDetectionType == "semiAutomatic") {
+            console.log("[CLICKGUARD] Running semiAutomatic post-click detection");
+
+            const ogTypeElement = document.head.querySelector("[property~='og:type']");
+            if (ogTypeElement && ogTypeElement.content === 'article') {
+                console.log("[CLICKGUARD] Article detected by meta property");
                 sendPredictionRequest();
             } else {
-                // monitored sites
-                chrome.storage.sync.get(["monitoredSites"]).then((result) => {
-                    const monitoredSitesList = result["monitoredSites"];
-                    
-                    for (let i = 0; i < monitoredSitesList.length; i++) {
-                        let webUrl = monitoredSitesList[i];
-                        // console.log("checked", webUrl);
-                        if (currentUrl.includes(webUrl)) {
-                            // what about https and no https
-                            console.log(`[CLICKGUARD] Matched url: ${webUrl}`)
-                            sendPredictionRequest();
-                            break;
-                        }
-                    }
-                }).catch((error) => {
-                    console.error("[CLICKGUARD] Error during getting monitored sites list:", error);
-                });
+                console.log("[CLICKGUARD] No article meta property detected");
+                checkMonitoredSites(currentUrl);
             }
-
+        // automatic
         } else if (postDetectionType == "automatic") {
+            console.log("[CLICKGUARD] Running semiAutomatic post-click detection")
             sendPredictionRequest();
         }
     }).catch((error) => {
@@ -151,15 +145,28 @@ async function runPostDetection() {
     })
 }
 
-// backend functionality - calling api for predictions
+function checkMonitoredSites(currentUrl) {
+    chrome.storage.sync.get(["monitoredSites"]).then((result) => {
+        const monitoredSitesList = result["monitoredSites"];
+        
+        for (let i = 0; i < monitoredSitesList.length; i++) {
+            let webUrl = monitoredSitesList[i];
+            if (currentUrl.includes(webUrl)) {
+                // what about https and no https
+                console.log(`[CLICKGUARD] Matched url: ${webUrl}`)
+                sendPredictionRequest();
+                break;
+            }
+        }
+    }).catch((error) => {
+        console.error("[CLICKGUARD] Error during getting monitored sites list:", error);
+    });
+}
 
 function sendPredictionRequest() {
-
-    const sourceUrl = window.location.href;  // needed as a key for storing predictions
+    const sourceUrl = window.location.href;
     const htmlContent = document.documentElement.outerHTML;
-
     const endpointUrl = 'https://clickguard.eu.pythonanywhere.com/extract_and_predict'; 
-    // const endpointUrl = 'http://127.0.0.1:5000/extract_and_predict'; 
 
     fetch(endpointUrl, {
         method: "POST",
