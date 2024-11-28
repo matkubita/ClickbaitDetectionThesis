@@ -145,15 +145,21 @@ async function runPostDetection() {
     })
 }
 
+// test if str matches pattern, pattern includes only * characters, which stand for any string of any length
+function matchesPattern(pattern, str) {
+    const escapedPattern = pattern.replace(/[-\/\\^$+?.()|[\]{}]/g, '\\$&');
+    const regexPattern = new RegExp('^' + escapedPattern.replace(/\*/g, '.*') + '$');
+    return regexPattern.test(str);
+}
+
 function checkMonitoredSites(currentUrl) {
     chrome.storage.sync.get(["monitoredSites"]).then((result) => {
         const monitoredSitesList = result["monitoredSites"];
         
         for (let i = 0; i < monitoredSitesList.length; i++) {
-            let webUrl = monitoredSitesList[i];
-            if (currentUrl.includes(webUrl)) {
-                // what about https and no https
-                console.log(`[CLICKGUARD] Matched url: ${webUrl}`)
+            let webUrlPattern = monitoredSitesList[i];
+            if (matchesPattern(webUrlPattern, currentUrl)) {
+                console.log(`[CLICKGUARD] Matched url: ${webUrlPattern}`)
                 sendPredictionRequest();
                 break;
             }

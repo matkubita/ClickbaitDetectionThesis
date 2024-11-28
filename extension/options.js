@@ -37,36 +37,61 @@ async function setMonitoredSites() {
     const htmlList = document.getElementById("monitoredSitesList");
     
     for (let i = 0; i < monitoredSites.length; i++) {
-      const urlItem = document.createElement('li');
-      urlItem.setAttribute('class', 'monitoredUrl');
       let webUrl = monitoredSites[i];
-      if (webUrl.startsWith("https://")) {
-        webUrl = webUrl.substring(8);
-      } else if (webUrl.startsWith("http://")) {
-        webUrl = webUrl.substring(7);
-      }
-      urlItem.textContent = webUrl;
-      htmlList.appendChild(urlItem);
+      addSiteToList(htmlList, webUrl);
     }
   });
 }
 
-// add monitored site to storage
+function deleteSite(listItem, webUrl) {
+  // remove from html list
+  listItem.remove();
+  // remove from storage list
+  chrome.storage.sync.get(["monitoredSites"]).then((result) => {
+    const monitoredSites = result['monitoredSites'];
+    const updatedSites = monitoredSites.filter(site => site !== webUrl);
+    chrome.storage.sync.set({"monitoredSites": updatedSites});
+  });
+}
+
+// adds site to list on options page
+function addSiteToList(htmlList, webUrl) {
+
+  const urlItem = document.createElement('li');
+  urlItem.setAttribute('class', 'monitoredUrl');
+  urlItem.textContent = webUrl;
+  
+  const smallText = document.createElement('small');
+  smallText.textContent = "X";
+  const deleteButton = document.createElement('button');
+  deleteButton.appendChild(smallText);
+  deleteButton.setAttribute('class', 'deleteButton btn btn-danger');
+  deleteButton.addEventListener('click', () => {
+    deleteSite(urlItem, webUrl);
+  });
+
+  urlItem.appendChild(deleteButton);
+  htmlList.appendChild(urlItem);
+}
+
+// handle new monitored site (add to storage and HTML list)
 document.getElementById('addButton').addEventListener('click', () => {
   let newWebsite = document.getElementById("monitoredSitesInput").value;
 
-  if (!newWebsite.startsWith("http")) {
-    newWebsite = "https://".concat(newWebsite);
+  if (!newWebsite.startsWith("http") || !newWebsite.startsWith("*")) {
+    newWebsite = "*".concat(newWebsite);
   }
+  // or always add * 
 
   chrome.storage.sync.get(["monitoredSites"]).then((result) => {
     const monitoredSites = result['monitoredSites'];
     monitoredSites.push(newWebsite);
-    chrome.storage.sync.set({"monitoredSites": monitoredSites});
+    chrome.storage.sync.set({"monitoredSites": monitoredSites})
   });
 
-  // TODO append to array ?
-  // setmonitoredSites(); - reloads automatically?
+  const htmlList = document.getElementById("monitoredSitesList");
+  addSiteToList(htmlList, newWebsite);
+
 });
 
 // Restores select box and checkbox state using the preferences stored in chrome.storage.

@@ -79,6 +79,11 @@ h3 {
     font-size: 0.95rem;
 }
 
+.deleteButton {
+  margin-left: 10px;
+  padding: 0px;
+}
+
 /* toggle switch, source: https://www.w3schools.com/howto/howto_css_switch.asp */
 
 .switch {
