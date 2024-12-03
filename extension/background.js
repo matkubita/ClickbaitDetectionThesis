@@ -1,6 +1,6 @@
 // for console access
 import { Detector } from "./detector.js";
-import { getCurrentTab } from "./utils.js";
+// import { getCurrentTab } from "./utils.js";
 
 const DEFAULT_POST_DETECTION = "manual";
 const DEFAULT_PRE_DETECTION = false;
@@ -37,7 +37,8 @@ async function setDefaults() {
 
 setDefaults();
 
-let currentTabId = getCurrentTab();
+// let currentTabId = getCurrentTab();
+let currentTabId;
 
 const MINIMAL_TIME = 2;
 let lastTime = new Date();  // last time badge was updated
@@ -46,7 +47,7 @@ let lastUrl = "";  // last url for which badge was updated
 
 // background tasks including badge changing
 async function handleBackground() {
-
+    
     console.log("Service worker has started");
 
     chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -71,10 +72,10 @@ async function handleBackground() {
                 const url = tab.url;
 
                 chrome.storage.local.get([url]).then((result) => {
-                    const prediction = result[url];
-                    if (typeof prediction !== 'undefined') {
+                    const data = result[url];
+                    if (typeof data !== 'undefined') {
                         console.log("Setting the badge for", url)
-                        new Detector().setBadge(prediction, tabId);
+                        new Detector().setBadge(data, tabId);
                     } else {
                         console.log("No prediction for", url)
                     }
@@ -90,7 +91,23 @@ handleBackground();
 
 // set up listener so content script can send message to set badge for current tab id
 chrome.runtime.onMessage.addListener(function(message) {
+
     if (message.action === 'setBadge') {
         new Detector().setBadge(message.content, currentTabId);
+
+        if (typeof message.content !== 'undefined') {
+            if (message.content.prediction == 1) {
+                console.log("[CLICKGUARD] Opening the popup");
+                
+                chrome.action.openPopup().then(() => {
+                    console.log("[CLICKGUARD] Popup has been opened");
+                }).catch((error) => {
+                    console.log("[CLICKGUARD] Popup is already opened");
+                })
+        }
+        }
+
     }
 });
+
+  
