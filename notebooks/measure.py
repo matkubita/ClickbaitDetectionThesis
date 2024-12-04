@@ -331,3 +331,20 @@ def baitness_measure(text, debug=False):
         print(metric_list)
     
     return measure
+
+metrics_functions = {
+    "n_words": words_count,
+    "cw_percentage": common_words_ratio,
+    "capitals_ratio": capital_letters_ratio,
+    "capitals_count":capital_words_count,
+    "bait_punct": clickbait_punctuation_count,
+    "nonbait_punct": nonclickbait_punctuation_count,
+    "numbers": numbers_count,
+    "2nd_pronouns": pronouns_2nd_person_count,
+    "superlatives": superlatives_ratio,
+    "speculatives": speculatives_count,
+    "bait_words": baiting_words_count,
+    "polarity": polarity_score,
+    "subjectivity": subjectivity_score,
+    "fres": flesch_reading_ease_score,
+}

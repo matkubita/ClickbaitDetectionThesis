@@ -115,6 +115,19 @@ async function runPostDetection() {
     console.log("[CLICKGUARD] Checking post-click detection type");
     const currentUrl = window.location.href;
 
+    // exit early if the page was already processed
+    try {
+        const result = await chrome.storage.local.get([currentUrl]);
+        const data = result[currentUrl];
+        if (typeof data !== 'undefined') {
+            console.log("[CLICKGUARD] Prediction already set for this URL");
+            return;
+        }
+    } catch (error) {
+        console.error("Error during storage access:", error);
+        return;
+    }
+
     chrome.storage.sync.get(["postDetectionType"]).then((result) => {
         const postDetectionType = result['postDetectionType'];
         console.log(`[CLICKGUARD] Current post-click detection type: ${postDetectionType}`);
@@ -172,7 +185,8 @@ function checkMonitoredSites(currentUrl) {
 function sendPredictionRequest() {
     const sourceUrl = window.location.href;
     const htmlContent = document.documentElement.outerHTML;
-    const endpointUrl = 'https://clickguard.eu.pythonanywhere.com/extract_and_predict'; 
+    // const endpointUrl = 'https://clickguard.eu.pythonanywhere.com/extract_and_predict'; 
+    const endpointUrl = 'http://127.0.0.1:5000/extract_and_predict'; 
 
     fetch(endpointUrl, {
         method: "POST",
@@ -187,12 +201,12 @@ function sendPredictionRequest() {
     .then(response => response.json())
     .then(data => {
         // send prediction data to popup
-        chrome.runtime.sendMessage({action: 'sendContent', content: data.prediction});
+        chrome.runtime.sendMessage({action: 'sendContent', content: data});
         // send message to background script
-        chrome.runtime.sendMessage({action: 'setBadge', content: data.prediction});
+        chrome.runtime.sendMessage({action: 'setBadge', content: data});
         // save prediction in storage
-        chrome.storage.local.set({[sourceUrl]: data.prediction});
-        console.log(`[CLICKGUARD] Value ${data.prediction} is set for ${sourceUrl}`);
+        chrome.storage.local.set({[sourceUrl]: data});
+        console.log(`[CLICKGUARD] Values ${data} is set for ${sourceUrl}`);
     })
     .catch((error) => {
         chrome.runtime.sendMessage({action: 'SendContent', content: `an error occured during fetching prediction: ${error}`})
