@@ -1,31 +1,45 @@
-const PREPARED_WEBSITES_URLS = ["https://www.google.com/search*", "https://www.thesun.co.uk/*/"];
+const PREPARED_WEBSITES_ENGINE = ["*google.com/search*"];
+const PREPARED_WEBSITES_NEWS = ["*thesun.co.uk/*/", "*www.thesun.co.uk/"];
 
 // runs pre detection pipeline
 async function runPreDetection() {
 
     const currentUrl = window.location.href;
-    let foundUrl;
+    let foundUrl = false;
+    let foundType;
 
-    for (let i = 0; i < PREPARED_WEBSITES_URLS.length; i++) {
-        let webUrlPattern = PREPARED_WEBSITES_URLS[i];
+    for (let i = 0; i < PREPARED_WEBSITES_ENGINE.length; i++) {
+        let webUrlPattern = PREPARED_WEBSITES_ENGINE[i];
         if (matchesPattern(webUrlPattern, currentUrl)) {
             console.log(`[CLICKGUARD] Matched url: ${webUrlPattern}`)
             foundUrl = true     
+            foundType = 'searchEngineDetection'
             break;
+        }
+    }
+    if (!foundUrl) {
+        for (let i = 0; i < PREPARED_WEBSITES_NEWS.length; i++) {
+            let webUrlPattern = PREPARED_WEBSITES_NEWS[i];
+            if (matchesPattern(webUrlPattern, currentUrl)) {
+                console.log(`[CLICKGUARD] Matched url: ${webUrlPattern}`)
+                foundUrl = true     
+                foundType = 'newsPortalDetection'
+                break;
+            }
         }
     }
 
     // if current website is on the list
     if (foundUrl) {
-        chrome.storage.sync.get(["searchEngineDetection"]).then((result) => {
-            const searchEngineDetection = result["searchEngineDetection"];
+        chrome.storage.sync.get([foundType]).then((result) => {
+            const searchEngineDetection = result[foundType];
             if (searchEngineDetection === true) {
                 sendPreDetectionRequest();
             } else {
-                console.log("Configured URL was detected, but search engine detection is turned off")
+                console.log(`Configured URL was detected, but ${foundType} is turned off`)
             }
         }).catch((error) => {
-            console.error("Error during setting default searchEngineDetection type:", error);
+            console.error(`Error during getting ${foundType} type:`, error);
         });
     }
   }

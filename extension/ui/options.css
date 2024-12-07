@@ -81,7 +81,15 @@ h3 {
 
 .deleteButton {
   margin-left: 10px;
+  margin-bottom: 3px;
   padding: 0px;
+  color: #d9534f;
+}
+
+.deleteButton:hover {
+  margin-left: 9px;
+  font-weight: bold;
+  color: #d9534f;
 }
 
 /* toggle switch, source: https://www.w3schools.com/howto/howto_css_switch.asp */
