@@ -231,9 +231,10 @@ function sendPredictionRequest() {
         chrome.runtime.sendMessage({action: 'setBadge', content: data});
         // save prediction in storage
         chrome.storage.local.set({[sourceUrl]: data});
-        console.log(`[CLICKGUARD] Values ${data} is set for ${sourceUrl}`);
+        console.log(`[CLICKGUARD] Values ${JSON.stringify(data, null, 2)} are set for ${sourceUrl}`);
     })
     .catch((error) => {
+        // add handlers when api call is not succesfull
         chrome.runtime.sendMessage({action: 'SendContent', content: `an error occured during fetching prediction: ${error}`})
     });
 }
