@@ -31,6 +31,20 @@
                 </label>
             </div>
         </div>
+        <!-- news outlets section -->
+        <div class="row">
+            <div class="col">
+                <b>News portal detection</b><br>
+                Automatically checks for clickbaits on news portals main pages.
+                Currently only <i>The Sun</i> is supported.
+            </div>
+            <div class="col-2" style="text-align: right;">
+                <label class="switch" style="display: inline-block;">
+                    <input type="checkbox" id="newsPortalDetection" name="preDetection">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
         <!-- POST CLICK DETECTION -->
         <div class="row">
             <div class="col"><h3>Post-click detection</h3></div>
@@ -99,16 +113,17 @@
             <div class="col"><h3>Monitored sites</h3></div>
         </div>
         <div class="row" style="padding-top: 0px;">
-            <div class="col">List with monitored sites for post-click detection</div>
+            <div class="col">List with monitored sites for post-click detection. Use asterisk '*' as a placeholder for matching any characters. </div>
         </div>
         <div class="row">
             <form style="display: flex;">
-                <input id="monitoredSitesInput" type="text" class="form-control" placeholder="www.example.com">
+                <input id="monitoredSitesInput" type="text" class="form-control" placeholder="www.example.com/news/*/*">
                 <button id="addButton" type="button" class="btn btn-primary">Add URL</button>
             </form>
+            <!-- div for testing -->
             <div>
                 <ul id="monitoredSitesList" class="table list">
-                    <li class="monitoredUrl">sportowefakty.wp.pl/pilka-nozna/ <button class="deleteButton btn btn-danger"><small>X</small></button></li>
+                    <li class="monitoredUrl">*sportowefakty.wp.pl/pilka-nozna/*/*<button class="deleteButton btn">x</button></li>
                 </ul>
             </div>
         </div>

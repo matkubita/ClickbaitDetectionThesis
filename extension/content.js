@@ -1,37 +1,57 @@
-const PREPARED_WEBSITES_URLS = new Map(); // for easy if-else clauses writing
-PREPARED_WEBSITES_URLS.set("https://www.google.com/search", 'google');
+const PREPARED_WEBSITES_ENGINE = ["*google.com/search*"];
+const PREPARED_WEBSITES_NEWS = ["*thesun.co.uk/*/", "*www.thesun.co.uk/"];
 
 // runs pre detection pipeline
 async function runPreDetection() {
 
     const currentUrl = window.location.href;
+    let foundUrl = false;
+    let foundType;
 
-    const foundKey = [...PREPARED_WEBSITES_URLS.keys()].find(prefix => currentUrl.startsWith(prefix)); 
-    const foundName = PREPARED_WEBSITES_URLS.get(foundKey) // e.g google
+    for (let i = 0; i < PREPARED_WEBSITES_ENGINE.length; i++) {
+        let webUrlPattern = PREPARED_WEBSITES_ENGINE[i];
+        if (matchesPattern(webUrlPattern, currentUrl)) {
+            console.log(`[CLICKGUARD] Matched url: ${webUrlPattern}`)
+            foundUrl = true     
+            foundType = 'searchEngineDetection'
+            break;
+        }
+    }
+    if (!foundUrl) {
+        for (let i = 0; i < PREPARED_WEBSITES_NEWS.length; i++) {
+            let webUrlPattern = PREPARED_WEBSITES_NEWS[i];
+            if (matchesPattern(webUrlPattern, currentUrl)) {
+                console.log(`[CLICKGUARD] Matched url: ${webUrlPattern}`)
+                foundUrl = true     
+                foundType = 'newsPortalDetection'
+                break;
+            }
+        }
+    }
 
-    if (typeof foundName !== 'undefined') {
-        // TODO check the settings for search engine detection
-        chrome.storage.sync.get(["searchEngineDetection"]).then((result) => {
-            const searchEngineDetection = result["searchEngineDetection"];
+    // if current website is on the list
+    if (foundUrl) {
+        chrome.storage.sync.get([foundType]).then((result) => {
+            const searchEngineDetection = result[foundType];
             if (searchEngineDetection === true) {
-                sendPreDetectionRequest(foundName);
+                sendPreDetectionRequest();
             } else {
-                console.log("Configured URL was detected, but search engine detection is turned off")
+                console.log(`Configured URL was detected, but ${foundType} is turned off`)
             }
         }).catch((error) => {
-            console.error("Error during setting default searchEngineDetection type:", error);
+            console.error(`Error during getting ${foundType} type:`, error);
         });
     }
-    // if current website is on the list
   }
 
 // makes and sets predictions for preclick detection
-function sendPreDetectionRequest(foundName) {
+function sendPreDetectionRequest() {
       
     const sourceUrl = window.location.href;
     const htmlContent = document.documentElement.outerHTML;
 
-    const endpointUrl = `https://clickguard.eu.pythonanywhere.com/${foundName}_detect`; // eg. /google_detect endpoint
+    // const endpointUrl = `https://clickguard.eu.pythonanywhere.com/predetect`;
+    const endpointUrl = 'http://127.0.0.1:5000/predetect'; 
 
     fetch(endpointUrl, {
         method: "POST",
@@ -39,72 +59,77 @@ function sendPreDetectionRequest(foundName) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            url: sourceUrl, // TODO: come up with standardized naming, maybe full prepared website urls?
+            url: sourceUrl,
             html: htmlContent
         })
     })
     .then(response => response.json())
     .then(data => {
         const predictionMap = new Map(Object.entries(data.predictions));
-        console.log(`[CLICKGUARD] Received predictions for ${foundName} search`);
-        if (foundName == 'google') {
-            addIconsGoogle(predictionMap);
-        }
-        // implement adding icons for different search engines / websites, it has to be set up in python API first
+        console.log(`[CLICKGUARD] Received predictions for page ${sourceUrl}`);
+        // if (foundName == 'google') {
+        //     addIconsGoogle(predictionMap);
+        // }
+        addIcons(predictionMap); // easy universal function
     })
     .catch((error) => {
         console.log(`[CLICKGUARD] An error occured during fetching prediction: ${error}`)
     });
 }
 
-// adds icons next to the headlines in google search
-function addIconsGoogle(predictionMap) {
-    // select all divs with the class 'MjjYud'
-    console.log('[CLICKGUARD] Adding icons')
-    const divs = document.querySelectorAll('div.MjjYud');
+function createIcon(prediction) {
+    const svgIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svgIcon.setAttribute("width", "16");
+    svgIcon.setAttribute("height", "16");
+    svgIcon.setAttribute("stroke-width", "1");
+    svgIcon.setAttribute("viewBox", "-1 -1 18 18");
+    svgIcon.setAttribute("style", "margin-left: 8px")
+    if (prediction == 1) {
+        svgIcon.setAttribute("fill", "#dc3545"); // red
+        svgIcon.setAttribute("stroke", "#dc3545");
+        svgIcon.setAttribute("class", "bi bi-exclamation-circle");
+        svgIcon.innerHTML = `<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>`
+    } else if (prediction == 0) {
+        svgIcon.setAttribute("fill", "#198754"); // green
+        svgIcon.setAttribute("stroke", "#198754");
+        svgIcon.setAttribute("class", "bi bi-check-circle");
+        svgIcon.innerHTML = `<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                            <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>`
+    }
+    return svgIcon
+}
 
-    divs.forEach(div => {
-        // find all anchor elements inside the div, probably its enough to select only first anchor
-        
-        const anchors = div.querySelectorAll('a');
+function addIcons(predictionMap) {
+    console.log('[CLICKGUARD] Adding icons');
+    const anchors = document.querySelectorAll('a');
+    anchors.forEach(anchor => {
+        const hrefValue = anchor.getAttribute('href');
+        const prediction = predictionMap.get(hrefValue);
+        if (typeof prediction !== 'undefined') {
+            icon = createIcon(prediction);
+            anchor.append(icon);
+        }
+    })
+}
 
-        anchors.forEach(anchor => {
-            // check if there is an h3 element inside the anchor - page title
-            const h3Element = anchor.querySelector('h3');
-            if (h3Element) {
-                const hrefValue = anchor.getAttribute('href');
-                const prediction = predictionMap.get(hrefValue);
-                if (prediction == 1) {
-                    const svgIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                    svgIcon.setAttribute("width", "16");
-                    svgIcon.setAttribute("height", "16");
-                    svgIcon.setAttribute("fill", "#dc3545"); // red
-                    svgIcon.setAttribute("stroke", "#dc3545");
-                    svgIcon.setAttribute("stroke-width", "1");
-                    svgIcon.setAttribute("class", "bi bi-exclamation-circle");
-                    svgIcon.setAttribute("viewBox", "-1 -1 18 18");
-                    svgIcon.setAttribute("style", "margin-left: 8px")
-                    svgIcon.innerHTML = `<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                                        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>`
-                    // insert icon before the h3 text
-                    h3Element.append(svgIcon);
-                } else if (prediction == 0) {
-                    const svgIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                    svgIcon.setAttribute("width", "16");
-                    svgIcon.setAttribute("height", "16");
-                    svgIcon.setAttribute("fill", "#198754"); // green
-                    svgIcon.setAttribute("stroke", "#198754");
-                    svgIcon.setAttribute("stroke-width", "1");
-                    svgIcon.setAttribute("class", "bi bi-check-circle");
-                    svgIcon.setAttribute("viewBox", "-1 -1 18 18");
-                    svgIcon.setAttribute("style", "margin-left: 8px")
-                    svgIcon.innerHTML = `<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                                        <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>`
-                    // insert icon before the h3 text
-                    h3Element.append(svgIcon);                
-                }
-            }
-        });
+function addIcons(predictionMap) {
+    console.log('[CLICKGUARD] Adding icons');
+    const anchors = document.querySelectorAll('a');
+    const processedHrefs = new Set();
+
+    anchors.forEach(anchor => {
+        const hrefValue = anchor.getAttribute('href');
+        // skip if href has already been processed
+        if (processedHrefs.has(hrefValue)) {
+            return; // forEach is a function - skips to the next iteration
+        }
+        const prediction = predictionMap.get(hrefValue);
+        if (typeof prediction !== 'undefined') {
+            const icon = createIcon(prediction);
+            anchor.append(icon);
+        }
+        processedHrefs.add(hrefValue);
     });
 }
 
@@ -206,9 +231,10 @@ function sendPredictionRequest() {
         chrome.runtime.sendMessage({action: 'setBadge', content: data});
         // save prediction in storage
         chrome.storage.local.set({[sourceUrl]: data});
-        console.log(`[CLICKGUARD] Values ${data} is set for ${sourceUrl}`);
+        console.log(`[CLICKGUARD] Values ${JSON.stringify(data, null, 2)} are set for ${sourceUrl}`);
     })
     .catch((error) => {
+        // add handlers when api call is not succesfull
         chrome.runtime.sendMessage({action: 'SendContent', content: `an error occured during fetching prediction: ${error}`})
     });
 }
