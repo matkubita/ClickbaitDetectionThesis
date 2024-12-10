@@ -9,16 +9,26 @@ export class Detector {
         if (typeof tabId !== 'number') {
             return;
         }
+        if (typeof predictionData.probability !== 'number') {
+            return;
+        }
 
-        if (predictionData.prediction == 1) {
+        if (predictionData.probability >= 0.6) {
             chrome.action.setBadgeBackgroundColor(
                 { color: '#cf2525', tabId: tabId },
                 () => {chrome.action.setBadgeText({ text: '!', tabId: tabId});}
             );
-        } else if (predictionData.prediction == 0) {
+        } else if (predictionData.probability >= 0.4) {
+            chrome.action.setBadgeBackgroundColor(
+                { color: '#e9d502', tabId: tabId },
+                 () => {chrome.action.setBadgeText({ text: '!', tabId: tabId});}
+                );
+        } else if (predictionData.probability >= 0) {
             chrome.action.setBadgeBackgroundColor(
                 { color: '#32a852', tabId: tabId },
-                 () => {chrome.action.setBadgeText({ text: ':)', tabId: tabId});}
+                    () => {chrome.action.setBadgeText({ text: 'v', tabId: tabId}, () => {
+                        chrome.action.setBadgeTextColor({ color: '#FFFFFF', tabId: tabId})
+                    });}
                 );
         } else {
             chrome.action.setBadgeText({});
