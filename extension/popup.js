@@ -72,7 +72,7 @@ document.getElementById('checkButton').addEventListener('click', async () => {
     chrome.scripting.executeScript({
         target: {tabId: activeTab.id},
         files: ['prediction.js']
-    });
+    }).catch((error) => {console.log(error);});
 });
 
 // options button
