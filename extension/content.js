@@ -50,8 +50,8 @@ function sendPreDetectionRequest() {
     const sourceUrl = window.location.href;
     const htmlContent = document.documentElement.outerHTML;
 
-    // const endpointUrl = `https://clickguard.eu.pythonanywhere.com/predetect`;
-    const endpointUrl = 'http://127.0.0.1:5000/predetect'; 
+    const endpointUrl = `https://clickguard-179698808618.europe-central2.run.app/predetect`;
+    // const endpointUrl = 'http://127.0.0.1:8080/predetect'; 
 
     fetch(endpointUrl, {
         method: "POST",
@@ -219,8 +219,8 @@ function checkMonitoredSites(currentUrl, spoilerGeneration = true) {
 function sendPredictionRequest(spoilerGeneration = true) {
     const sourceUrl = window.location.href;
     const htmlContent = document.documentElement.outerHTML;
-    // const endpointUrl = 'https://clickguard.eu.pythonanywhere.com/extract_and_predict'; 
-    const endpointUrl = 'http://127.0.0.1:5000/extract_and_predict'; 
+    const endpointUrl = 'https://clickguard-179698808618.europe-central2.run.app/extract_and_predict'; 
+    // const endpointUrl = 'http://127.0.0.1:8080/extract_and_predict'; 
 
     fetch(endpointUrl, {
         method: "POST",

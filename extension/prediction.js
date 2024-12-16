@@ -3,8 +3,8 @@
 function sendPredictionRequest(spoilerGeneration = false) {
     const sourceUrl = window.location.href;
     const htmlContent = document.documentElement.outerHTML;
-    // const endpointUrl = 'https://clickguard.eu.pythonanywhere.com/extract_and_predict'; 
-    const endpointUrl = 'http://127.0.0.1:5000/extract_and_predict'; 
+    const endpointUrl = 'https://clickguard-179698808618.europe-central2.run.app/extract_and_predict'; 
+    // const endpointUrl = 'http://127.0.0.1:8080/extract_and_predict'; 
 
     fetch(endpointUrl, {
         method: "POST",
