@@ -1,6 +1,6 @@
 // backend functionality - calling api for predictions
 
-function sendPredictionRequest() {
+function sendPredictionRequest(spoilerGeneration = false) {
     const sourceUrl = window.location.href;
     const htmlContent = document.documentElement.outerHTML;
     // const endpointUrl = 'https://clickguard.eu.pythonanywhere.com/extract_and_predict'; 
@@ -13,7 +13,8 @@ function sendPredictionRequest() {
         },
         body: JSON.stringify({
             url: sourceUrl,
-            html: htmlContent
+            html: htmlContent,
+            generateSpoiler: spoilerGeneration
         })
     })
     .then(response => response.json())
@@ -32,4 +33,10 @@ function sendPredictionRequest() {
     });
 }
 
-sendPredictionRequest();
+chrome.storage.sync.get(['spoilerGeneration']).then((result) => {
+    const spoilerGeneration = result["spoilerGeneration"]
+    sendPredictionRequest(spoilerGeneration);
+}).catch((error) => {
+    console.error("[CLICKGUARD] Error during getting spoiler generation flag, using default", error);
+    sendPredictionRequest();
+})

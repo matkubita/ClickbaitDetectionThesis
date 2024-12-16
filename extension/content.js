@@ -155,18 +155,21 @@ async function runPostDetection() {
             return;
         }
     } catch (error) {
-        console.error("Error during storage access:", error);
+        console.error("[CLICKGUARD] Error during storage access:", error);
         return;
     }
 
-    chrome.storage.sync.get(["postDetectionType"]).then((result) => {
+    chrome.storage.sync.get(["postDetectionType", "spoilerGeneration"]).then((result) => {
         const postDetectionType = result['postDetectionType'];
+        const spoilerGeneration = result['spoilerGeneration']; 
+
         console.log(`[CLICKGUARD] Current post-click detection type: ${postDetectionType}`);
+        console.log(`[CLICKGUARD] Current spoiler generation flag: ${spoilerGeneration}`);
 
         // monitored
         if (postDetectionType == 'monitored') {
             console.log("[CLICKGUARD] Running monitored post-click detection");
-            checkMonitoredSites(currentUrl);
+            checkMonitoredSites(currentUrl, spoilerGeneration);
         // semi automatic
         } else if (postDetectionType == "semiAutomatic") {
             console.log("[CLICKGUARD] Running semiAutomatic post-click detection");
@@ -174,15 +177,15 @@ async function runPostDetection() {
             const ogTypeElement = document.head.querySelector("[property~='og:type']");
             if (ogTypeElement && ogTypeElement.content === 'article') {
                 console.log("[CLICKGUARD] Article detected by meta property");
-                sendPredictionRequest();
+                sendPredictionRequest(spoilerGeneration);
             } else {
                 console.log("[CLICKGUARD] No article meta property detected");
-                checkMonitoredSites(currentUrl);
+                checkMonitoredSites(currentUrl, spoilerGeneration);
             }
         // automatic
         } else if (postDetectionType == "automatic") {
             console.log("[CLICKGUARD] Running semiAutomatic post-click detection")
-            sendPredictionRequest();
+            sendPredictionRequest(spoilerGeneration);
         }
     }).catch((error) => {
         console.error("[CLICKGUARD] Error during getting default post detection type:", error);
@@ -196,7 +199,7 @@ function matchesPattern(pattern, str) {
     return regexPattern.test(str);
 }
 
-function checkMonitoredSites(currentUrl) {
+function checkMonitoredSites(currentUrl, spoilerGeneration = true) {
     chrome.storage.sync.get(["monitoredSites"]).then((result) => {
         const monitoredSitesList = result["monitoredSites"];
         
@@ -204,7 +207,7 @@ function checkMonitoredSites(currentUrl) {
             let webUrlPattern = monitoredSitesList[i];
             if (matchesPattern(webUrlPattern, currentUrl)) {
                 console.log(`[CLICKGUARD] Matched url: ${webUrlPattern}`)
-                sendPredictionRequest();
+                sendPredictionRequest(spoilerGeneration);
                 break;
             }
         }
@@ -213,7 +216,7 @@ function checkMonitoredSites(currentUrl) {
     });
 }
 
-function sendPredictionRequest() {
+function sendPredictionRequest(spoilerGeneration = true) {
     const sourceUrl = window.location.href;
     const htmlContent = document.documentElement.outerHTML;
     // const endpointUrl = 'https://clickguard.eu.pythonanywhere.com/extract_and_predict'; 
@@ -226,7 +229,8 @@ function sendPredictionRequest() {
         },
         body: JSON.stringify({
             url: sourceUrl,
-            html: htmlContent
+            html: htmlContent,
+            generateSpoiler: spoilerGeneration
         })
     })
     .then(response => response.json())

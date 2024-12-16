@@ -1,3 +1,5 @@
+// SAVE BUTTON
+
 // saves post click detection options to chrome sync storage
 document.getElementById('saveButton').addEventListener('click', () => {
     
@@ -12,8 +14,10 @@ document.getElementById('saveButton').addEventListener('click', () => {
           status.textContent = '';
         }, 750);
       }
-    );
+    )
   });
+
+// SAVING OPTIONS TO STORAGE
 
 // saves pre click detection options to sync storage
 document.getElementById("searchEngineDetection").addEventListener('change', (event) => {
@@ -27,7 +31,7 @@ document.getElementById("searchEngineDetection").addEventListener('change', (eve
   chrome.storage.sync.set(
     { searchEngineDetection: searchEngineDetection},
     () => {console.log("Pre-click detection options saved");}
-  );
+  )
 });
 
 document.getElementById("newsPortalDetection").addEventListener('change', (event) => {
@@ -41,8 +45,25 @@ document.getElementById("newsPortalDetection").addEventListener('change', (event
   chrome.storage.sync.set(
     { newsPortalDetection: newsPortalDetection},
     () => {console.log("Pre-click detection options saved");}
-  );
+  )
 });
+
+// saves spoiler generation option to storage
+document.getElementById("spoilerGeneration").addEventListener('change', (event) => {
+  const spoilerGeneration = event.target.checked;
+  if (spoilerGeneration) {
+    console.log("Checkbox is checked..");
+  } else {
+    console.log("Checkbox is not checked..");
+  }
+
+  chrome.storage.sync.set(
+    { spoilerGeneration: spoilerGeneration},
+    () => {console.log("Pre-click detection options saved");}
+  )
+});
+
+// MONITORED SITES HANDLERS
 
 // sets monitored sites from storage
 async function setMonitoredSites() {
@@ -54,9 +75,10 @@ async function setMonitoredSites() {
       let webUrl = monitoredSites[i];
       addSiteToList(htmlList, webUrl);
     }
-  });
+  }).catch((error) => {console.error(error)});
 }
 
+// deletes site from monitored sites list
 function deleteSite(listItem, webUrl) {
   // remove from html list
   listItem.remove();
@@ -65,7 +87,7 @@ function deleteSite(listItem, webUrl) {
     const monitoredSites = result['monitoredSites'];
     const updatedSites = monitoredSites.filter(site => site !== webUrl);
     chrome.storage.sync.set({"monitoredSites": updatedSites});
-  });
+  }).catch((error) => {console.error(error)});
 }
 
 // adds site to list on options page
@@ -86,19 +108,21 @@ function addSiteToList(htmlList, webUrl) {
   htmlList.appendChild(urlItem);
 }
 
+// ADD BUTTON
+
 // handle new monitored site (add to storage and HTML list)
 document.getElementById('addButton').addEventListener('click', () => {
   let newWebsite = document.getElementById("monitoredSitesInput").value;
 
-  if (!newWebsite.startsWith("http") & !newWebsite.startsWith("*")) {
+  if (!newWebsite.startsWith("http") && !newWebsite.startsWith("*")) {
     newWebsite = "*".concat(newWebsite);
   }
 
   chrome.storage.sync.get(["monitoredSites"]).then((result) => {
     const monitoredSites = result['monitoredSites'];
     monitoredSites.push(newWebsite);
-    chrome.storage.sync.set({"monitoredSites": monitoredSites})
-  });
+    chrome.storage.sync.set({"monitoredSites": monitoredSites});
+  }).catch((error) => {console.error(error)});
 
   const htmlList = document.getElementById("monitoredSitesList");
   addSiteToList(htmlList, newWebsite);
@@ -113,6 +137,8 @@ monitoredSitesInput.addEventListener("keypress", function(event) {
   }
 });
 
+// SET DEFAULTS
+
 // Restores select box and checkbox state using the preferences stored in chrome.storage.
 document.addEventListener('DOMContentLoaded', () => {
   
@@ -120,9 +146,9 @@ document.addEventListener('DOMContentLoaded', () => {
   chrome.storage.sync.get(["postDetectionType"]).then((result) => {
     const postDetectionType = result["postDetectionType"];
     document.getElementById(postDetectionType.concat("Detection")).checked = "checked"
-  });
+  }).catch((error) => {console.error(error)});
 
-  // set pre click detection toggle
+  // set pre click detection serach engine toggle
   chrome.storage.sync.get(["searchEngineDetection"]).then((result) => {
     const searchEngineDetection = result["searchEngineDetection"];
     console.log("searchEngineDetection", searchEngineDetection);
@@ -131,7 +157,29 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       document.getElementById("searchEngineDetection").checked = false;
     }
-  });
+  }).catch((error) => {console.error(error)});
+
+  // set pre click detection news portal toggle
+  chrome.storage.sync.get(["newsPortalDetection"]).then((result) => {
+    const newsPortalDetection = result["newsPortalDetection"];
+    console.log("newsPortalDetection", newsPortalDetection);
+    if (newsPortalDetection) {
+      document.getElementById("newsPortalDetection").checked = true;
+    } else {
+      document.getElementById("newsPortalDetection").checked = false;
+    }
+  }).catch((error) => {console.error(error)});
+
+  // set pre click detection news portal toggle
+  chrome.storage.sync.get(["spoilerGeneration"]).then((result) => {
+    const spoilerGeneration = result["spoilerGeneration"];
+    console.log("spoilerGeneration", spoilerGeneration);
+    if (spoilerGeneration) {
+      document.getElementById("spoilerGeneration").checked = true;
+    } else {
+      document.getElementById("spoilerGeneration").checked = false;
+    }
+  }).catch((error) => {console.error(error)});
 
   // set monitored sites list
   setMonitoredSites();

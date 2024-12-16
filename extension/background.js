@@ -2,6 +2,7 @@
 import { Detector } from "./detector.js";
 
 const DEFAULT_POST_DETECTION = "manual";
+const DEFAULT_SPOILER_GENERATION = true;
 const DEFAULT_PRE_DETECTION_SEARCH = false;
 const DEFAULT_PRE_DETECTION_NEWS = false;
 const MONITORED_SITES = ["https://www.thesun.co.uk/health/*/*"];
@@ -19,6 +20,18 @@ async function setDefaults() {
         }
     }).catch((error) => {
         console.error("Error during setting default postDetectionType:", error);
+    });
+    // spoiler generation
+    chrome.storage.sync.get(["spoilerGeneration"]).then((result) => {
+        const spoilerGeneration = result["spoilerGeneration"];
+        if (typeof spoilerGeneration === 'undefined') {
+            console.log("Setting the default for spoilerGeneration to", DEFAULT_SPOILER_GENERATION);
+            chrome.storage.sync.set({["spoilerGeneration"]: DEFAULT_SPOILER_GENERATION});
+        } else {
+            console.log("spoilerGeneration flag already set to", spoilerGeneration);
+        }
+    }).catch((error) => {
+        console.error("Error during setting default spoilerGeneration flag:", error);
     });
     // pre detection - search engine
     chrome.storage.sync.get(["searchEngineDetection"]).then((result) => {
@@ -45,7 +58,7 @@ async function setDefaults() {
         console.error("Error during setting default newsPortalDetection type:", error);
     });
     // monitored sites list
-    chrome.storage.sync.set({"monitoredSites": MONITORED_SITES})
+    chrome.storage.sync.set({"monitoredSites": MONITORED_SITES});
 }
 
 setDefaults();
