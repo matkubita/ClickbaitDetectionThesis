@@ -110,7 +110,7 @@ async function handleBadgeSetting() {
 handleBadgeSetting();
 
 // set up listener so content script can send message to set badge for current tab id
-chrome.runtime.onMessage.addListener(function(message) {
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     if (message.action === 'setBadge') {
         new Detector().setBadge(message.content, currentTabId);
         if (typeof message.content !== 'undefined') {
@@ -123,6 +123,66 @@ chrome.runtime.onMessage.addListener(function(message) {
                 })
             }
         }
+    } else if (message.action === "sendPredictionRequest") {
+
+        const { sourceUrl, htmlContent, spoilerGeneration } = message.payload;
+
+        // const endpointUrl = 'https://clickguard-179698808618.europe-central2.run.app/extract_and_predict'; 
+        const endpointUrl = 'http://127.0.0.1:8080/extract_and_predict';
+
+        fetch(endpointUrl, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                url: sourceUrl,
+                html: htmlContent,
+                generateSpoiler: spoilerGeneration
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // respond back to the content script
+            sendResponse({ success: true, data: data });
+            console.log(`[CLICKGUARD] Request to proxy server succesfull`)
+        })
+        .catch((error) => {
+            sendResponse({ success: false, error: error.message });
+            console.error(`[CLICKGUARD] Error during prediction: ${error.message}`);
+        });
+
+        // return true to keep the sendResponse callback alive
+        return true;
+        
+    } else if (message.action === "sendPreDetectionRequest") {
+              
+        const { sourceUrl, htmlContent } = message.payload;
+    
+        // const endpointUrl = `https://clickguard-179698808618.europe-central2.run.app/predetect`;
+        const endpointUrl = 'http://127.0.0.1:8080/predetect'; 
+    
+        fetch(endpointUrl, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                url: sourceUrl,
+                html: htmlContent
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            sendResponse({ success: true, data: data });
+            console.log(`[CLICKGUARD] Request to proxy server succesfull`)
+        })
+        .catch((error) => {
+            sendResponse({ success: false, error: error.message });
+            console.error(`[CLICKGUARD] Error during prediction: ${error.message}`);
+        });
+
+        return true;
     }
 });
 
