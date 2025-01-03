@@ -30,6 +30,20 @@ document.getElementById("searchEngineDetection").addEventListener('change', (eve
   );
 });
 
+document.getElementById("newsPortalDetection").addEventListener('change', (event) => {
+  const newsPortalDetection = event.target.checked;
+  if (newsPortalDetection) {
+    console.log("Checkbox is checked..");
+  } else {
+    console.log("Checkbox is not checked..");
+  }
+
+  chrome.storage.sync.set(
+    { newsPortalDetection: newsPortalDetection},
+    () => {console.log("Pre-click detection options saved");}
+  );
+});
+
 // sets monitored sites from storage
 async function setMonitoredSites() {
   chrome.storage.sync.get(["monitoredSites"]).then((result) => {
@@ -60,12 +74,10 @@ function addSiteToList(htmlList, webUrl) {
   const urlItem = document.createElement('li');
   urlItem.setAttribute('class', 'monitoredUrl');
   urlItem.textContent = webUrl;
-  
-  const smallText = document.createElement('small');
-  smallText.textContent = "X";
+
   const deleteButton = document.createElement('button');
-  deleteButton.appendChild(smallText);
-  deleteButton.setAttribute('class', 'deleteButton btn btn-danger');
+  deleteButton.textContent = "x";
+  deleteButton.setAttribute('class', 'deleteButton btn');
   deleteButton.addEventListener('click', () => {
     deleteSite(urlItem, webUrl);
   });
@@ -78,10 +90,9 @@ function addSiteToList(htmlList, webUrl) {
 document.getElementById('addButton').addEventListener('click', () => {
   let newWebsite = document.getElementById("monitoredSitesInput").value;
 
-  if (!newWebsite.startsWith("http") || !newWebsite.startsWith("*")) {
+  if (!newWebsite.startsWith("http") & !newWebsite.startsWith("*")) {
     newWebsite = "*".concat(newWebsite);
   }
-  // or always add * 
 
   chrome.storage.sync.get(["monitoredSites"]).then((result) => {
     const monitoredSites = result['monitoredSites'];
@@ -92,6 +103,14 @@ document.getElementById('addButton').addEventListener('click', () => {
   const htmlList = document.getElementById("monitoredSitesList");
   addSiteToList(htmlList, newWebsite);
 
+});
+
+monitoredSitesInput.addEventListener("keypress", function(event) {
+  const addButton = document.getElementById("addButton");
+  if (event.key === "Enter") {
+      event.preventDefault(); 
+      addButton.click();
+  }
 });
 
 // Restores select box and checkbox state using the preferences stored in chrome.storage.

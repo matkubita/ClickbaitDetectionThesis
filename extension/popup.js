@@ -19,16 +19,19 @@ function setPredictionInfo(predictionData) {
 
     // Set response message based on prediction
     if (predictionData.prediction == 1) {
-        responseContent.textContent = "Beware, that's a clickbait!";
+        // responseContent.textContent = "Beware, that's a clickbait!";
+        responseContent.textContent = "";
     } else if (predictionData.prediction == 0) {
-        responseContent.textContent = "You are good to go!";
+        // responseContent.textContent = "You are good to go!";
+        responseContent.textContent = "";
     } else {
         responseContent.textContent = "Find out if the article is a clickbait";
     }
 
+    const color = generateColor(predictionData.probability);
     const probabilityHtml = `
         <div style="padding-top: 10px; margin-bottom: 0px;">
-            Clickbait probability: <h4 style="color: orangered; display: inline;"><b>${predictionData.probability * 100}%</b></h4>
+            Clickbait probability: <h4 style="color: ${color}; display: inline;"><b>${Math.round(predictionData.probability * 100)}%</b></h4>
         </div>`;
     let spoilerHtml = ``
     if (predictionData.prediction == 1) {
@@ -80,3 +83,20 @@ document.getElementById('optionsButton').addEventListener('click', function() {
       window.open(chrome.runtime.getURL('templates/options.html'));
     }
   });
+
+
+// 
+function generateColor(probability) {
+    let red;
+    let green;
+    if (probability < 0.5) {
+        green = 255;
+        const redRatio = probability / 0.5;
+        red = Math.floor(255 * redRatio);
+    } else {
+        red = 255;
+        const greenRatio = (1 - probability) / 0.5;
+        green = Math.floor(255 * greenRatio);
+    }
+    return `rgb(${red}, ${green * (4/5)}, 0)`;
+}
