@@ -127,8 +127,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
         const { sourceUrl, htmlContent, spoilerGeneration } = message.payload;
 
-        // const endpointUrl = 'https://clickguard-179698808618.europe-central2.run.app/extract_and_predict'; 
-        const endpointUrl = 'http://127.0.0.1:8080/extract_and_predict';
+        const endpointUrl = 'https://clickguard-179698808618.europe-central2.run.app/extract_and_predict'; 
+        // const endpointUrl = 'http://127.0.0.1:8080/extract_and_predict';
 
         fetch(endpointUrl, {
             method: "POST",
@@ -154,13 +154,13 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
         // return true to keep the sendResponse callback alive
         return true;
-        
+
     } else if (message.action === "sendPreDetectionRequest") {
               
         const { sourceUrl, htmlContent } = message.payload;
     
-        // const endpointUrl = `https://clickguard-179698808618.europe-central2.run.app/predetect`;
-        const endpointUrl = 'http://127.0.0.1:8080/predetect'; 
+        const endpointUrl = `https://clickguard-179698808618.europe-central2.run.app/predetect`;
+        // const endpointUrl = 'http://127.0.0.1:8080/predetect'; 
     
         fetch(endpointUrl, {
             method: "POST",
