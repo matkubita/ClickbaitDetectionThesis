@@ -3,7 +3,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import json
 
-def get_spiler(api_key, title, article_text, model):
+def get_spoiler(api_key, title, article_text, model):
     client = OpenAI(api_key=api_key)
     
     system_prompt = f"""\
@@ -54,7 +54,7 @@ def get_spiler(api_key, title, article_text, model):
         return None
 
 def main(api_key, title, article_text, model):
-    print(get_spiler(api_key, title, article_text, model))
+    print(get_spoiler(api_key, title, article_text, model))
     
 if __name__ == "__main__":
     load_dotenv()
