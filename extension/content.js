@@ -11,7 +11,7 @@ async function runPreDetection() {
     for (let i = 0; i < PREPARED_WEBSITES_ENGINE.length; i++) {
         let webUrlPattern = PREPARED_WEBSITES_ENGINE[i];
         if (matchesPattern(webUrlPattern, currentUrl)) {
-            console.log(`[CLICKGUARD] Matched url: ${webUrlPattern}`)
+            console.log(`[CLICKGUARD] Matched prepared url: ${webUrlPattern}`)
             foundUrl = true     
             foundType = 'searchEngineDetection'
             break;
@@ -21,7 +21,7 @@ async function runPreDetection() {
         for (let i = 0; i < PREPARED_WEBSITES_NEWS.length; i++) {
             let webUrlPattern = PREPARED_WEBSITES_NEWS[i];
             if (matchesPattern(webUrlPattern, currentUrl)) {
-                console.log(`[CLICKGUARD] Matched url: ${webUrlPattern}`)
+                console.log(`[CLICKGUARD] Matched prepared url: ${webUrlPattern}`)
                 foundUrl = true     
                 foundType = 'newsPortalDetection'
                 break;
@@ -189,7 +189,24 @@ async function runPostDetection() {
 function matchesPattern(pattern, str) {
     const escapedPattern = pattern.replace(/[-\/\\^$+?.()|[\]{}]/g, '\\$&');
     const regexPattern = new RegExp('^' + escapedPattern.replace(/\*/g, '.*') + '$');
-    return regexPattern.test(str);
+    const matched = regexPattern.test(str);
+    if (matched) {
+      if (pattern.endsWith('*')) {
+        return true;
+      }
+      let patternCount = countSlashes(pattern);
+      if (pattern.startsWith('*')) {
+        patternCount = patternCount + 2;  // no https://
+      }
+      if (patternCount === countSlashes(str)) {
+        return true;
+      }
+    }
+    return false
+}
+
+function countSlashes(str) {
+    return (str.match(/\//g) || []).length;
 }
 
 function checkMonitoredSites(currentUrl, spoilerGeneration = true) {
@@ -199,7 +216,7 @@ function checkMonitoredSites(currentUrl, spoilerGeneration = true) {
         for (let i = 0; i < monitoredSitesList.length; i++) {
             let webUrlPattern = monitoredSitesList[i];
             if (matchesPattern(webUrlPattern, currentUrl)) {
-                console.log(`[CLICKGUARD] Matched url: ${webUrlPattern}`)
+                console.log(`[CLICKGUARD] Matched monitored site url: ${webUrlPattern}`)
                 sendPredictionRequest(spoilerGeneration);
                 break;
             }

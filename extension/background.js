@@ -5,7 +5,7 @@ const DEFAULT_POST_DETECTION = "manual";
 const DEFAULT_SPOILER_GENERATION = true;
 const DEFAULT_PRE_DETECTION_SEARCH = false;
 const DEFAULT_PRE_DETECTION_NEWS = false;
-const MONITORED_SITES = ["https://www.thesun.co.uk/health/*/*"];
+const MONITORED_SITES = ["https://www.thesun.co.uk/health/*/*/"];
 
 // set default values for settings on extension start up 
 async function setDefaults() {
