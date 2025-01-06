@@ -2,9 +2,6 @@ function sendPredictionRequest(spoilerGeneration = true) {
     const sourceUrl = window.location.href;
     const htmlContent = document.documentElement.outerHTML;
 
-    console.log("HALO")
-    console.log(htmlContent);
-
     // Send a message to the background script to handle the request
     chrome.runtime.sendMessage({
         action: "sendPredictionRequest",

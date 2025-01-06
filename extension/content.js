@@ -102,19 +102,6 @@ function createIcon(prediction) {
 function addIcons(predictionMap) {
     console.log('[CLICKGUARD] Adding icons');
     const anchors = document.querySelectorAll('a');
-    anchors.forEach(anchor => {
-        const hrefValue = anchor.getAttribute('href');
-        const prediction = predictionMap.get(hrefValue);
-        if (typeof prediction !== 'undefined') {
-            icon = createIcon(prediction);
-            anchor.append(icon);
-        }
-    })
-}
-
-function addIcons(predictionMap) {
-    console.log('[CLICKGUARD] Adding icons');
-    const anchors = document.querySelectorAll('a');
     const processedHrefs = new Set();
 
     anchors.forEach(anchor => {
