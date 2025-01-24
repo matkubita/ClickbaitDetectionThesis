@@ -50,4 +50,5 @@ To showcase the results, a fully functional browser extension was developed for 
     - **8-BERT-Detection** - BERT model for clickbait detection task.
     - **8.5-BERT-Spoiling** - Fine-tuned RoBERTa and T5-Large models for clickbait spoiling tasks.
     - **9-OPENAI-Spoiling** - OpenAI models for spoiling tasks.
-- **other** - Code with minor functionalities
+- **final_models** - Final models used in browser extension.
+- **other** - Code with minor functionalities.
