@@ -34,7 +34,7 @@ function setPredictionInfo(predictionData) {
             Clickbait probability: <h4 style="color: ${color}; display: inline;"><b>${Math.round(predictionData.probability * 100)}%</b></h4>
         </div>`;
     let spoilerHtml = ``
-    if (predictionData.prediction == 1) {
+    if (predictionData.prediction == 1 & predictionData.spoiler !== "") {
         spoilerHtml = `
         <p style="padding-top: 10px; margin-bottom: 0px;">
             Spoiler: <b>${predictionData.spoiler}</b>
@@ -64,7 +64,6 @@ document.getElementById('checkButton').addEventListener('click', async () => {
     chrome.runtime.onMessage.addListener(function(message) {
         if (message.action === 'sendContent') {
             setPredictionInfo(message.content);
-            console.log(`UWAG UWAGA UWAGA ${activeTab.id}`)
             new Detector().setBadge(message.content, activeTab.id);
         }
     });

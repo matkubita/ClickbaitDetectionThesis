@@ -108,6 +108,30 @@
             <div id="status"></div>
         </div>
         <br>
+        <!-- <div class="row">
+            <div class="col" style="padding-top: 10px; box-shadow: -12px -24px 2px -24px black;">
+                <b>Spoiler generation</b><br>
+                Shows article spoiler in the popup. Slows down clickbait alerts.
+            </div>
+            <div class="col-2" style="padding-top: 10px; text-align: right;">
+                <label class="switch" style="display: inline-block;">
+                    <input type="checkbox" id="spoilerGeneration" name="spoilerGeneration">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div> -->
+        <div class="row">
+            <div class="col">
+                <b>Spoiler generation</b><br>
+                Shows article spoiler in the popup, only for articles classified as clickbait. Slows down clickbait alerts.
+            </div>
+            <div class="col-2" style="padding-top: 10px; text-align: right;">
+                <label class="switch" style="display: inline-block;">
+                    <input type="checkbox" id="spoilerGeneration" name="spoilerGeneration">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
         <!-- monitored sites section -->
         <div class="row" style="padding-bottom: 0px;">
             <div class="col"><h3>Monitored sites</h3></div>
@@ -123,7 +147,7 @@
             <!-- div for testing -->
             <div>
                 <ul id="monitoredSitesList" class="table list">
-                    <li class="monitoredUrl">*sportowefakty.wp.pl/pilka-nozna/*/*<button class="deleteButton btn">x</button></li>
+                    <!-- <li class="monitoredUrl">*sportowefakty.wp.pl/pilka-nozna/*/*<button class="deleteButton btn">x</button></li> -->
                 </ul>
             </div>
         </div>

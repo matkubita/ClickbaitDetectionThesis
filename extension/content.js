@@ -11,7 +11,7 @@ async function runPreDetection() {
     for (let i = 0; i < PREPARED_WEBSITES_ENGINE.length; i++) {
         let webUrlPattern = PREPARED_WEBSITES_ENGINE[i];
         if (matchesPattern(webUrlPattern, currentUrl)) {
-            console.log(`[CLICKGUARD] Matched url: ${webUrlPattern}`)
+            console.log(`[CLICKGUARD] Matched prepared url: ${webUrlPattern}`)
             foundUrl = true     
             foundType = 'searchEngineDetection'
             break;
@@ -21,7 +21,7 @@ async function runPreDetection() {
         for (let i = 0; i < PREPARED_WEBSITES_NEWS.length; i++) {
             let webUrlPattern = PREPARED_WEBSITES_NEWS[i];
             if (matchesPattern(webUrlPattern, currentUrl)) {
-                console.log(`[CLICKGUARD] Matched url: ${webUrlPattern}`)
+                console.log(`[CLICKGUARD] Matched prepared url: ${webUrlPattern}`)
                 foundUrl = true     
                 foundType = 'newsPortalDetection'
                 break;
@@ -44,36 +44,29 @@ async function runPreDetection() {
     }
   }
 
-// makes and sets predictions for preclick detection
 function sendPreDetectionRequest() {
-      
     const sourceUrl = window.location.href;
     const htmlContent = document.documentElement.outerHTML;
 
-    // const endpointUrl = `https://clickguard.eu.pythonanywhere.com/predetect`;
-    const endpointUrl = 'http://127.0.0.1:5000/predetect'; 
+    // Send a message to the background script to handle the request
+    chrome.runtime.sendMessage({
+        action: "sendPreDetectionRequest",
+        payload: {
+            sourceUrl: sourceUrl,
+            htmlContent: htmlContent
+        }
+    }, (response) => {
+        if (response && response.success) {
+            const data = response.data;
+            
+            const predictionMap = new Map(Object.entries(data.predictions));
+            console.log(`[CLICKGUARD] Received predictions for page ${sourceUrl}`);
 
-    fetch(endpointUrl, {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            url: sourceUrl,
-            html: htmlContent
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        const predictionMap = new Map(Object.entries(data.predictions));
-        console.log(`[CLICKGUARD] Received predictions for page ${sourceUrl}`);
-        // if (foundName == 'google') {
-        //     addIconsGoogle(predictionMap);
-        // }
-        addIcons(predictionMap); // easy universal function
-    })
-    .catch((error) => {
-        console.log(`[CLICKGUARD] An error occured during fetching prediction: ${error}`)
+            addIcons(predictionMap); // easy universal function
+            
+        } else {
+            console.error(`[CLICKGUARD] Error: ${response ? response.error : 'No response from background script'}`);
+        }
     });
 }
 
@@ -104,19 +97,6 @@ function createIcon(prediction) {
                             <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>`
     }
     return svgIcon
-}
-
-function addIcons(predictionMap) {
-    console.log('[CLICKGUARD] Adding icons');
-    const anchors = document.querySelectorAll('a');
-    anchors.forEach(anchor => {
-        const hrefValue = anchor.getAttribute('href');
-        const prediction = predictionMap.get(hrefValue);
-        if (typeof prediction !== 'undefined') {
-            icon = createIcon(prediction);
-            anchor.append(icon);
-        }
-    })
 }
 
 function addIcons(predictionMap) {
@@ -155,18 +135,21 @@ async function runPostDetection() {
             return;
         }
     } catch (error) {
-        console.error("Error during storage access:", error);
+        console.error("[CLICKGUARD] Error during storage access:", error);
         return;
     }
 
-    chrome.storage.sync.get(["postDetectionType"]).then((result) => {
+    chrome.storage.sync.get(["postDetectionType", "spoilerGeneration"]).then((result) => {
         const postDetectionType = result['postDetectionType'];
+        const spoilerGeneration = result['spoilerGeneration']; 
+
         console.log(`[CLICKGUARD] Current post-click detection type: ${postDetectionType}`);
+        console.log(`[CLICKGUARD] Current spoiler generation flag: ${spoilerGeneration}`);
 
         // monitored
         if (postDetectionType == 'monitored') {
             console.log("[CLICKGUARD] Running monitored post-click detection");
-            checkMonitoredSites(currentUrl);
+            checkMonitoredSites(currentUrl, spoilerGeneration);
         // semi automatic
         } else if (postDetectionType == "semiAutomatic") {
             console.log("[CLICKGUARD] Running semiAutomatic post-click detection");
@@ -174,15 +157,15 @@ async function runPostDetection() {
             const ogTypeElement = document.head.querySelector("[property~='og:type']");
             if (ogTypeElement && ogTypeElement.content === 'article') {
                 console.log("[CLICKGUARD] Article detected by meta property");
-                sendPredictionRequest();
+                sendPredictionRequest(spoilerGeneration);
             } else {
                 console.log("[CLICKGUARD] No article meta property detected");
-                checkMonitoredSites(currentUrl);
+                checkMonitoredSites(currentUrl, spoilerGeneration);
             }
         // automatic
         } else if (postDetectionType == "automatic") {
             console.log("[CLICKGUARD] Running semiAutomatic post-click detection")
-            sendPredictionRequest();
+            sendPredictionRequest(spoilerGeneration);
         }
     }).catch((error) => {
         console.error("[CLICKGUARD] Error during getting default post detection type:", error);
@@ -193,18 +176,35 @@ async function runPostDetection() {
 function matchesPattern(pattern, str) {
     const escapedPattern = pattern.replace(/[-\/\\^$+?.()|[\]{}]/g, '\\$&');
     const regexPattern = new RegExp('^' + escapedPattern.replace(/\*/g, '.*') + '$');
-    return regexPattern.test(str);
+    const matched = regexPattern.test(str);
+    if (matched) {
+      if (pattern.endsWith('*')) {
+        return true;
+      }
+      let patternCount = countSlashes(pattern);
+      if (pattern.startsWith('*')) {
+        patternCount = patternCount + 2;  // no https://
+      }
+      if (patternCount === countSlashes(str)) {
+        return true;
+      }
+    }
+    return false
 }
 
-function checkMonitoredSites(currentUrl) {
+function countSlashes(str) {
+    return (str.match(/\//g) || []).length;
+}
+
+function checkMonitoredSites(currentUrl, spoilerGeneration = true) {
     chrome.storage.sync.get(["monitoredSites"]).then((result) => {
         const monitoredSitesList = result["monitoredSites"];
         
         for (let i = 0; i < monitoredSitesList.length; i++) {
             let webUrlPattern = monitoredSitesList[i];
             if (matchesPattern(webUrlPattern, currentUrl)) {
-                console.log(`[CLICKGUARD] Matched url: ${webUrlPattern}`)
-                sendPredictionRequest();
+                console.log(`[CLICKGUARD] Matched monitored site url: ${webUrlPattern}`)
+                sendPredictionRequest(spoilerGeneration);
                 break;
             }
         }
@@ -213,35 +213,33 @@ function checkMonitoredSites(currentUrl) {
     });
 }
 
-function sendPredictionRequest() {
+function sendPredictionRequest(spoilerGeneration = true) {
     const sourceUrl = window.location.href;
     const htmlContent = document.documentElement.outerHTML;
-    // const endpointUrl = 'https://clickguard.eu.pythonanywhere.com/extract_and_predict'; 
-    const endpointUrl = 'http://127.0.0.1:5000/extract_and_predict'; 
 
-    fetch(endpointUrl, {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            url: sourceUrl,
-            html: htmlContent
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        // send prediction data to popup
-        chrome.runtime.sendMessage({action: 'sendContent', content: data});
-        // send message to background script
-        chrome.runtime.sendMessage({action: 'setBadge', content: data});
-        // save prediction in storage
-        chrome.storage.local.set({[sourceUrl]: data});
-        console.log(`[CLICKGUARD] Values ${JSON.stringify(data, null, 2)} are set for ${sourceUrl}`);
-    })
-    .catch((error) => {
-        // add handlers when api call is not succesfull
-        chrome.runtime.sendMessage({action: 'SendContent', content: `an error occured during fetching prediction: ${error}`})
+    // Send a message to the background script to handle the request
+    chrome.runtime.sendMessage({
+        action: "sendPredictionRequest",
+        payload: {
+            sourceUrl: sourceUrl,
+            htmlContent: htmlContent,
+            spoilerGeneration: spoilerGeneration
+        }
+    }, (response) => {
+        if (response && response.success) {
+            const data = response.data;
+            
+            // send messages to popup or badge if necessary
+            chrome.runtime.sendMessage({ action: 'sendContent', content: data });
+            chrome.runtime.sendMessage({ action: 'setBadge', content: data });
+
+            // save prediction in storage
+            chrome.storage.local.set({ [sourceUrl]: data });
+            console.log(`[CLICKGUARD] Values ${JSON.stringify(data, null, 2)} are set for ${sourceUrl}`);
+            
+        } else {
+            console.error(`[CLICKGUARD] Error: ${response ? response.error : 'No response from background script'}`);
+        }
     });
 }
 

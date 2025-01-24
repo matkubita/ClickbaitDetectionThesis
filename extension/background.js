@@ -2,9 +2,13 @@
 import { Detector } from "./detector.js";
 
 const DEFAULT_POST_DETECTION = "manual";
+const DEFAULT_SPOILER_GENERATION = true;
 const DEFAULT_PRE_DETECTION_SEARCH = false;
 const DEFAULT_PRE_DETECTION_NEWS = false;
-const MONITORED_SITES = ["https://www.thesun.co.uk/health/*/*"];
+const MONITORED_SITES = ["https://www.thesun.co.uk/health/*/*/"];
+
+const PROXY_URL = 'https://clickguard-179698808618.europe-central2.run.app'; 
+// const PROXY_URL = 'http://127.0.0.1:8080'; 
 
 // set default values for settings on extension start up 
 async function setDefaults() {
@@ -19,6 +23,18 @@ async function setDefaults() {
         }
     }).catch((error) => {
         console.error("Error during setting default postDetectionType:", error);
+    });
+    // spoiler generation
+    chrome.storage.sync.get(["spoilerGeneration"]).then((result) => {
+        const spoilerGeneration = result["spoilerGeneration"];
+        if (typeof spoilerGeneration === 'undefined') {
+            console.log("Setting the default for spoilerGeneration to", DEFAULT_SPOILER_GENERATION);
+            chrome.storage.sync.set({["spoilerGeneration"]: DEFAULT_SPOILER_GENERATION});
+        } else {
+            console.log("spoilerGeneration flag already set to", spoilerGeneration);
+        }
+    }).catch((error) => {
+        console.error("Error during setting default spoilerGeneration flag:", error);
     });
     // pre detection - search engine
     chrome.storage.sync.get(["searchEngineDetection"]).then((result) => {
@@ -45,7 +61,7 @@ async function setDefaults() {
         console.error("Error during setting default newsPortalDetection type:", error);
     });
     // monitored sites list
-    chrome.storage.sync.set({"monitoredSites": MONITORED_SITES})
+    chrome.storage.sync.set({"monitoredSites": MONITORED_SITES});
 }
 
 setDefaults();
@@ -97,7 +113,7 @@ async function handleBadgeSetting() {
 handleBadgeSetting();
 
 // set up listener so content script can send message to set badge for current tab id
-chrome.runtime.onMessage.addListener(function(message) {
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     if (message.action === 'setBadge') {
         new Detector().setBadge(message.content, currentTabId);
         if (typeof message.content !== 'undefined') {
@@ -110,6 +126,64 @@ chrome.runtime.onMessage.addListener(function(message) {
                 })
             }
         }
+    } else if (message.action === "sendPredictionRequest") {
+
+        const { sourceUrl, htmlContent, spoilerGeneration } = message.payload;
+
+        const endpointUrl = `${PROXY_URL}/extract_and_predict`;
+
+        fetch(endpointUrl, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                url: sourceUrl,
+                html: htmlContent,
+                generateSpoiler: spoilerGeneration
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // respond back to the content script
+            sendResponse({ success: true, data: data });
+            console.log(`[CLICKGUARD] Request to proxy server succesfull`)
+        })
+        .catch((error) => {
+            sendResponse({ success: false, error: error.message });
+            console.error(`[CLICKGUARD] Error during prediction: ${error.message}`);
+        });
+
+        // return true to keep the sendResponse callback alive
+        return true;
+
+    } else if (message.action === "sendPreDetectionRequest") {
+              
+        const { sourceUrl, htmlContent } = message.payload;
+    
+        const endpointUrl = `${PROXY_URL}/predetect`;
+    
+        fetch(endpointUrl, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                url: sourceUrl,
+                html: htmlContent
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            sendResponse({ success: true, data: data });
+            console.log(`[CLICKGUARD] Request to proxy server succesfull`)
+        })
+        .catch((error) => {
+            sendResponse({ success: false, error: error.message });
+            console.error(`[CLICKGUARD] Error during prediction: ${error.message}`);
+        });
+
+        return true;
     }
 });
 
