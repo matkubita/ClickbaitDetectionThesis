@@ -5,7 +5,7 @@
 [Mateusz Kubita](https://github.com/matkubita)<br>
 [Wojciech Michaluk](https://github.com/wojo501)
 
-## "Clickbait News Detection and Analysis"
+## Clickbait News Detection and Analysis
 
 This engineering thesis presents an analysis of clickbait articles using machine learning and artificial intelligence methods. The team conducted a review of existing research in this area, which allowed the creation of a custom metric, referred to in the thesis as the *baitness measure*, which quantifies the clickbait nature of articles.
 
@@ -35,20 +35,23 @@ To showcase the results, a fully functional browser extension was developed for 
 4. Once the environment is activated, you can start working with the project.
 
 ## Content of the project:
+- **api** - Python API files for backend service for the browser extension.
+- **data** - Directory containing both original and preprocessed data.
+- **environments** - Environment files.
 - **extension** - JavaScript files for fully functional web browser extension.
+- **final_models** - Final models used in browser extension.
 - **notebooks** - Jupyter Notebooks with Python code.
     - **0-Function-Helper** - Definitions of frequently used functions.
     - **1-Getting-Data** - Downloading, saving, merging data. Data pre-cleaning.
     - **2-EDA** - Exploratory data analysis.
-    - **2.1-Creating-[dataset_name]** - Creating final dataset for model training.
+    - **2.1-Creating_dataset_[dataset_name]** - Creating final dataset for model training.
     - **2.5-Dummy-Classifier** - Tests with dummy classifier. Ground to compare with other models.
     - **3-Informativeness-Measures** - Checking metrics for clickbait detection. Custom metric foundation.
     - **4-TFIDF-Trivial** - TFIDF base model.
-    - **5-TFIDF-[model_name]** - Comparison of TFIDF on cleaned and raw datasets.
+    - **5-TFIDF_Traditional_ML_Models** - Comparison of TFIDF on cleaned and raw datasets.
     - **6-Word-Embedding-Models** - Word2vec, GloVe models.
     - **7.5-LLM-OPENAI** - Embeddings from OpenAI for machine learning models.
     - **8-BERT-Detection** - BERT model for clickbait detection task.
     - **8.5-BERT-Spoiling** - Fine-tuned RoBERTa and T5-Large models for clickbait spoiling tasks.
     - **9-OPENAI-Spoiling** - OpenAI models for spoiling tasks.
-- **final_models** - Final models used in browser extension.
 - **other** - Code with minor functionalities.
