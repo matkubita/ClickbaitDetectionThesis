@@ -139,7 +139,7 @@ monitoredSitesInput.addEventListener("keypress", function(event) {
 
 // SET DEFAULTS
 
-// Restores select box and checkbox state using the preferences stored in chrome.storage.
+// restores select box and checkbox state using the preferences stored in chrome storage
 document.addEventListener('DOMContentLoaded', () => {
   
   // set post detection radio button

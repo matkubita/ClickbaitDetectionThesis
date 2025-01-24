@@ -8,4 +8,4 @@ data/cc_dataset.csv
 pretrained_models
 file_path.txt
 notebooks/*.html
-__pycache__
+*__pycache__

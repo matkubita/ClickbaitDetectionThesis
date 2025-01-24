@@ -17,7 +17,7 @@ function setPredictionInfo(predictionData) {
     const responseContent = document.getElementById('responseContent');
     const predictionDetails = document.getElementById('predictionDetails');
 
-    // Set response message based on prediction
+    // set response message based on prediction
     if (predictionData.prediction == 1) {
         // responseContent.textContent = "Beware, that's a clickbait!";
         responseContent.textContent = "";

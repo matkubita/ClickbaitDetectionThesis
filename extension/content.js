@@ -48,7 +48,7 @@ function sendPreDetectionRequest() {
     const sourceUrl = window.location.href;
     const htmlContent = document.documentElement.outerHTML;
 
-    // Send a message to the background script to handle the request
+    // send a message to the background script to handle the request
     chrome.runtime.sendMessage({
         action: "sendPreDetectionRequest",
         payload: {
@@ -217,7 +217,7 @@ function sendPredictionRequest(spoilerGeneration = true) {
     const sourceUrl = window.location.href;
     const htmlContent = document.documentElement.outerHTML;
 
-    // Send a message to the background script to handle the request
+    // send a message to the background script to handle the request
     chrome.runtime.sendMessage({
         action: "sendPredictionRequest",
         payload: {
