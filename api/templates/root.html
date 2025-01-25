@@ -4,109 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Documentation</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<header>
-    <h1>ClickGuard API Docs</h1>
-    <p>API provides several endpoints for clickbait detection and text extraction</p>
-</header>
-
-<div class="container">
-
-    <div class="endpoint">
-        <h2>Extract</h2>
-        <p class="method">POST /extract</p>
-        <p class="description">Takes in a html article and returns extracted title and main content</p>
-        <p><b>Request Body:</b></p>
-        <pre>
-{
-    "url": "string",
-    "html": "string"
-}
-        </pre>
-        <p><b>Response:</b></p>
-        <pre>
-{
-    "title": "string"
-    "content": "string"
-}
-        </pre>
-    </div>
-
-    <div class="endpoint">
-        <h2>Predict</h2>
-        <p class="method">POST /predict</p>
-        <p class="description">Takes in an article title and content and returns a clickbait prediction based on the title and content</p>
-        <p><b>Request Body:</b></p>
-        <pre>
-{
-    "title": "string"
-    "content": "string"
-}
-        </pre>
-        <p><b>Response:</b></p>
-        <pre>
-{
-    "prediction": "int",
-    "probability": "float",
-    "explanation": "string",
-    "spoiler": "string"
-}
-        </pre>
-    </div>
-
-    <div class="endpoint">
-        <h2>Extract and Predict</h2>
-        <p class="method">POST /extract_and_predict</p>
-        <p class="description">Takes in a html article, extracts title and content, and returns a clickbait prediction, probability, explanation and spoiler</p>
-        <p><b>Request Body:</b></p>
-        <pre>
-{
-    "url": "string",
-    "html": "string"
-}
-        </pre>
-        <p><b>Response:</b></p>
-        <pre>
-{
-    "prediction": "int",
-    "probability": "float",
-    "explanation": "string",
-    "spoiler": "string"
-}
-        </pre>
-    </div>
-
-    <div class="endpoint">
-        <h2>Predetect</h2>
-        <p class="method">POST /predetect</p>
-        <p class="description">Takes in a html of the website, extracts articles urls and titles, and for each returns a clickbait probability.</p>
-        <p><b>Request Body:</b></p>
-        <pre>
-{
-    "url": "string",
-    "html": "string"
-}
-        </pre>
-        <p><b>Response:</b></p>
-        <pre>
-{
-    "predictions": {
-        "url1": "int",
-        "url2": "int",
-        ...
-    }
-}
-        </pre>
-    </div>
-
-</div>
-
-<div class="footer">
-    <p>&copy; 2024 ClickGuard</p>
-</div>
+<h1>ClickGuard API Docs</h1>
+<p>Nothing to see here...</p>
 
 </body>
 </html>
