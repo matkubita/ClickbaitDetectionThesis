@@ -1,5 +1,13 @@
 # Bachelor thesis at Warsaw University of Technology
 
+This thesis was completed at the Faculty of Mathematics and Information Technology at the Warsaw University of Technology.
+
+Supervisor: [Anna Wróblewska](https://github.com/awroble)<br>
+Cooperators: <br>
+[Daniel Dan](https://github.com/DanielDanLab)<br>
+Robert Paluch<br>
+[Adam Majczyk](https://github.com/amajczyk)
+
 ## Authors
 [Tymoteusz Urban](https://github.com/tymsoncyferki)<br>
 [Mateusz Kubita](https://github.com/matkubita)<br>
