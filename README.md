@@ -1,19 +1,21 @@
-# Bachelor thesis at Warsaw University of Technology
+# Clickbait News Detection and Analysis - Bachelor Thesis
 
 This thesis was completed at the Faculty of Mathematics and Information Technology at the Warsaw University of Technology.
-
-Supervisor: [Anna Wróblewska](https://github.com/awroble)<br>
-Cooperators: <br>
-[Daniel Dan](https://github.com/DanielDanLab)<br>
-Robert Paluch<br>
-[Adam Majczyk](https://github.com/amajczyk)
 
 ## Authors
 [Tymoteusz Urban](https://github.com/tymsoncyferki)<br>
 [Mateusz Kubita](https://github.com/matkubita)<br>
 [Wojciech Michaluk](https://github.com/wojo501)
 
-## Clickbait News Detection and Analysis
+Supervisor: <br>
+[Anna Wróblewska](https://github.com/awroble)<br>
+
+Cooperators: <br>
+[Daniel Dan](https://github.com/DanielDanLab)<br>
+Robert Paluch<br>
+[Adam Majczyk](https://github.com/amajczyk)
+
+## Abstract
 
 This engineering thesis presents an analysis of clickbait articles using machine learning and artificial intelligence methods. The team conducted a review of existing research in this area, which allowed the creation of a custom metric, referred to in the thesis as the *baitness measure*, which quantifies the clickbait nature of articles.
 
@@ -22,25 +24,6 @@ Natural language processing techniques were applied to find patterns that allow 
 Among the applied machine learning models, the best overall was **XGBoost**, which combined informativeness measures with embeddings generated using OpenAI, achieving the highest F1-score of **91%**.
 
 To showcase the results, a fully functional browser extension was developed for chromium-based browsers. This tool is capable of warning users both before and after they access a clickbait article. After opening an article, the user receives a percentage score indicating the likelihood of the article being a clickbait. The prediction is explained based on the analyzed metrics, including those developed by the team. A one- to two-sentence summary of the entire article is also provided.
-
-
-## How to Set Up the Environment with Conda:
-1. Clone or navigate to the project directory:
-    ```bash
-    cd ClickbaitDetectionThesis/environments
-    ```
-
-2. Create the Conda environment using the `main_env.yaml` file (respectively for eda_env):
-    ```bash
-    conda env create -f main_env.yaml
-    ```
-
-3. Activate the environment:
-    ```bash
-    conda activate main_env
-    ```
-
-4. Once the environment is activated, you can start working with the project.
 
 ## Content of the project:
 - **api** - Python API files for backend service for the browser extension.
@@ -63,3 +46,21 @@ To showcase the results, a fully functional browser extension was developed for 
     - **8.5-BERT-Spoiling** - Fine-tuned RoBERTa and T5-Large models for clickbait spoiling tasks.
     - **9-OPENAI-Spoiling** - OpenAI models for spoiling tasks.
 - **other** - Code with minor functionalities.
+
+## How to Set Up the Environment with Conda:
+1. Clone or navigate to the project directory:
+    ```bash
+    cd ClickbaitDetectionThesis/environments
+    ```
+
+2. Create the Conda environment using the `main_env.yaml` file (respectively for eda_env):
+    ```bash
+    conda env create -f main_env.yaml
+    ```
+
+3. Activate the environment:
+    ```bash
+    conda activate main_env
+    ```
+
+4. Once the environment is activated, you can start working with the project.
